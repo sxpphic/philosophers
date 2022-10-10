@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:02:23 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/10 14:22:49 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/10 14:45:53 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,15 @@ int	main(void)
 	int time_to_die;
 	int time_to_eat;
 	int time_to_sleep;
+	int	number_of_time_each_philosopher_must_eat; 
 	void	*result;
 	int i;
 	static long c;
+	struct timeval		time_count;
+	struct timezone	time_zone;
 
+	gettimeofday(&time_count, &time_zone);
+	printf("time: %i\n", time_count.tv_usec);
 	i = -1;
 	while (i++ < number_of_philosophers)
 	{

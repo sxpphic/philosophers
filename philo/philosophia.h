@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:03:34 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/10 11:16:09 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/10 14:42:27 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 /* remover dps */
 #ifndef number_of_philosophers
-# define number_of_philosophers 4
+# define number_of_philosophers 2
 #endif
 
 #include <stdio.h>
