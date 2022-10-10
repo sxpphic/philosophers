@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:02:23 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/10 12:51:14 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/10 14:22:49 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ void	t_error(char *msg)
 int	main(void)
 {
 	pthread_t	philo[number_of_philosophers];
+	int time_to_die;
+	int time_to_eat;
+	int time_to_sleep;
 	void	*result;
 	int i;
 	static long c;
