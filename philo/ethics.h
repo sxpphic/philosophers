@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:03:34 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 10:39:25 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/25 11:15:06 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,14 @@ typedef struct s_dining_room {
 	pthread_mutex_t	*forks;
 	pthread_t		*philos;
 }t_dining_room;
+
+typedef struct s_philo {
+	int	phiid;
+	pthread_mutex_t	*left_fork;
+	pthread_t		*philo;
+	pthread_mutex_t	*right_fork;
+
+}t_philo;
 
 /* utils-funcs */
 
