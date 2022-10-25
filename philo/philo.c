@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:02:23 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/17 10:07:05 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/25 09:21:56 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int	ft_atoi(const char *str)
 		if (str[i] >= '0' && str[i] <= '9')
 			nb = nb * 10;
 	}
+	return (nb);
 }
 
 void *test_func(void *a)
@@ -76,24 +77,41 @@ void	default_imput(char **argv, int argc, t_conf *config)
 int	main(int argc, char *argv[])
 {
 	t_conf				config;
-	void				*result;
 	int					i;
-	static long			c;
-	struct timeval		time_count;
-	struct timezone		time_zone;
+	struct timeval		start;
+	struct timeval		end;
+	long long time_ms;
+	long long time_sec;
+	long long time_start_sec;
+	long long time_start_ms;
 	
 	if (argc == 5 || argc == 6)
 		default_imput(argv, argc, &config);
 	else
 		return (0);
-	gettimeofday(&time_count, &time_zone);
-	printf("time: %i\n", time_count.tv_usec / 1000);
+	time_ms = 0;
+	printf("time: %lli\n", time_ms);
+	gettimeofday(&start, NULL);
+	usleep(100 * 1000);
+	gettimeofday(&end, NULL);
+	time_ms = /*(end.tv_sec - start.tv_sec) +*/ (end.tv_usec - start.tv_usec) / 1000;
+	if (time_ms < 0)
+	{
+		time_ms += 1000;
+		printf("asdfadsf\n");
+	}
+	printf("time: %lli\n", time_ms);
 	i = 1;
-	while (i > 0)
+/*	while (i > 0)
 	{
 		gettimeofday(&time_count, &time_zone);
-		printf("time: %i\n", time_count.tv_usec / 1000);
+		time_ms = time_count.tv_usec / 1000;
+		time_sec = time_count.tv_sec - time_start_sec;
+		printf("time: %lli\n", time_sec * 1000);
+		printf("time: %lli\n", time_ms);
 		i++;
+		usleep(10 * 1000);
 	}
+	*/
 	return (0);
 }
