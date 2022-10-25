@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:03:34 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 13:15:40 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/25 13:37:07 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ typedef struct s_conf {
 	long long	time_to_eat;
 	long long	time_to_sleep;
 	int	number_of_time_each_philosopher_must_eat;
+	pthread_mutex_t	timer;
+
+	struct timeval start;
+	struct timeval end;
 	long long	time_ms;
 }t_conf;
 

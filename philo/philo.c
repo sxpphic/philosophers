@@ -6,11 +6,21 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:02:23 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 13:16:49 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/25 13:38:11 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ethics.h"
+
+long int	time_diff(struct timeval *start, struct timeval *end)
+{
+	long int c;
+
+	c = (end->tv_usec - start->tv_usec) / 1000;
+	if (c < 0)
+		c += 1000;
+	return (c);
+}
 
 void	ft_think(t_philo *philo)
 {
@@ -19,15 +29,27 @@ void	ft_think(t_philo *philo)
 
 void	take_forks(t_philo *philo)
 {
+	gettimeofday(&philo->config.start, NULL);
 	pthread_mutex_lock(philo->left_fork);
 	pthread_mutex_lock(philo->right_fork);
+	gettimeofday(&philo->config.end, NULL);
+
+	pthread_mutex_lock(&philo->config.timer);
+	philo->config.time_ms += time_diff(&philo->config.start, &philo->config.end);
+	pthread_mutex_unlock(&philo->config.timer);
 	printf("%lli %i has taken a fork\n", philo->config.time_ms, philo->phiid);
 }
 
 void	ft_eat(t_philo *philo)
 {
 	printf("%lli %i is eating\n", philo->config.time_ms, philo->phiid);
+	gettimeofday(&philo->config.start, NULL);
 	usleep(philo->config.time_to_eat);
+	gettimeofday(&philo->config.end, NULL);
+
+	pthread_mutex_lock(&philo->config.timer);
+	philo->config.time_ms += time_diff(&philo->config.start, &philo->config.end);
+	pthread_mutex_unlock(&philo->config.timer);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 }
@@ -36,6 +58,8 @@ void	ft_sleep(t_philo *philo)
 {
 	printf("%lli %i is sleeping\n", philo->config.time_ms, philo->phiid);
 	usleep(philo->config.time_to_sleep);
+//	philo->config.time_ms += philo->config.time_to_sleep;
+
 }
 
 void *ft_philosopher(void *arg)
