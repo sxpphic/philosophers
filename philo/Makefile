@@ -1,6 +1,7 @@
 NAME =		philo
 
-SRC =		philo.c
+SRC =		philo.c\
+			aesthetics.c
 
 CC =		cc
 
