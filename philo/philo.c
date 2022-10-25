@@ -6,35 +6,16 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:02:23 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 10:04:45 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/25 10:29:58 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ethics.h"
 
-void *test_func(void *a)
+void *ft_philosopher(void *fork)
 {
-	int	i;
-	long c;
 
-	c = (long)a;
-	i = -1;
-	while (i++ < 5)
-	{
-		c++;
-		printf("%li\n", c);
-	}
-	return ((void *)c);
-}
-
-long int	time_diff(struct timeval *start, struct timeval *end)
-{
-	long int c;
-
-	c = (end->tv_sec - start->tv_sec) + (end->tv_usec - start->tv_usec) / 1000;
-	if (c < 0)
-		c += 1000;
-	return (c);
+	return (NULL);
 }
 
 void	default_imput(char **argv, int argc, t_conf *config)
@@ -49,35 +30,34 @@ void	default_imput(char **argv, int argc, t_conf *config)
 
 void	ft_philosophy(t_conf *config)
 {
-	
+	pthread_t			*philos;
+	pthread_mutex_t		*forks;
+	int					i;
+
+	philos = malloc(sizeof(pthread_t) * config->number_of_philosophers);
+	if (!philos)
+		return (NULL);
+	forks = malloc(sizeof(pthread_mutex_t) * config->number_of_philosophers);
+	if (!forks)
+		return (NULL);
+	i = -1;
+	while (++i < config->number_of_philosophers)
+		pthread_mutex_init(&forks[i]);
+	i = -1;
+	while (++i < config->number_of_philosophers) // devo tratar os possiveis erros de criarção de threads e mutex?
+		pthread_create(&philos[i], NULL, ft_philosopher, (void *)&fork[i]);
+	while (i < config->number_of_philosophers)
 }
 
 int	main(int argc, char *argv[])
 {
-	struct timeval		start;
-	struct timeval		end;
 	t_conf				config;
-	long long			timestamp;
 	
 	if (argc == 5 || argc == 6)
 		default_imput(argv, argc, &config);
 	else
 		return (0);
-	timestamp = 0;
-	//ft_philosophy(&default_imput);
-	gettimeofday(&start, NULL);
-	gettimeofday(&end, NULL);
-	printf("%li take fork\n", time_diff(&start, &end));
-	gettimeofday(&start, NULL);
-	usleep(config.time_to_eat);
-	gettimeofday(&end, NULL);
-	timestamp += time_diff(&start, &end);
-	printf("%lli take fork\n", timestamp);
-	gettimeofday(&start, NULL);
-	usleep(config.time_to_eat);
-	gettimeofday(&end, NULL);
-	timestamp += time_diff(&start, &end);
-	printf("%lli take fork\n", timestamp);
+	ft_philosophy(&default_imput);
 
 
 	return (0);
