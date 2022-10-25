@@ -6,15 +6,36 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:02:23 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 11:23:23 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/25 13:16:49 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ethics.h"
 
-void	ft_think(int philo_id)
+void	ft_think(t_philo *philo)
 {
-	printf("timestamp_in_ms %i is thinking\n", philo_id);
+	printf("%lli %i is thinking\n", philo->config.time_ms, philo->phiid);
+}
+
+void	take_forks(t_philo *philo)
+{
+	pthread_mutex_lock(philo->left_fork);
+	pthread_mutex_lock(philo->right_fork);
+	printf("%lli %i has taken a fork\n", philo->config.time_ms, philo->phiid);
+}
+
+void	ft_eat(t_philo *philo)
+{
+	printf("%lli %i is eating\n", philo->config.time_ms, philo->phiid);
+	usleep(philo->config.time_to_eat);
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
+}
+
+void	ft_sleep(t_philo *philo)
+{
+	printf("%lli %i is sleeping\n", philo->config.time_ms, philo->phiid);
+	usleep(philo->config.time_to_sleep);
 }
 
 void *ft_philosopher(void *arg)
@@ -22,7 +43,13 @@ void *ft_philosopher(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	ft_think(philo->phiid);
+	while (1)
+	{
+		take_forks(philo);
+		ft_eat(philo);
+		ft_sleep(philo);
+		ft_think(philo);
+	}
 	return NULL;
 }
 
@@ -64,10 +91,20 @@ void	ft_philosophy(t_conf *config)
 			philos[i].left_fork = &dining_room->forks[i - 1];
 		philos[i].philo = &dining_room->philos[i];
 		philos[i].right_fork = &dining_room->forks[i];
+		philos[i].config = *config;
 	}
-	i = -1;
-	while (++i < config->number_of_philosophers) // devo tratar os possiveis erros de criarção de threads e mutex?
+	i = 0;
+	while (i < config->number_of_philosophers) // devo tratar os possiveis erros de criarção de threads e mutex?
+	{
 		pthread_create(&dining_room->philos[i], NULL, ft_philosopher, (void *)&philos[i]);
+		i += 2;
+	}
+	i = 1;
+	while (i < config->number_of_philosophers) // devo tratar os possiveis erros de criarção de threads e mutex?
+	{
+		pthread_create(&dining_room->philos[i], NULL, ft_philosopher, (void *)&philos[i]);
+		i += 2;
+	}
 	i = -1;
 	while (++i < config->number_of_philosophers)
 		pthread_join(dining_room->philos[i], NULL);
@@ -82,6 +119,7 @@ int	main(int argc, char *argv[])
 		default_imput(argv, argc, &config);
 	else
 		return (0);
+	config.time_ms = 0;
 	ft_philosophy(&config);
 
 

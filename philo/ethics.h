@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:03:34 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 11:15:06 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/25 13:15:40 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct s_conf {
 	long long	time_to_eat;
 	long long	time_to_sleep;
 	int	number_of_time_each_philosopher_must_eat;
+	long long	time_ms;
 }t_conf;
 
 typedef struct s_dining_room {
@@ -34,11 +35,12 @@ typedef struct s_dining_room {
 }t_dining_room;
 
 typedef struct s_philo {
-	int	phiid;
+	t_conf			config;
+	int				phiid;
 	pthread_mutex_t	*left_fork;
 	pthread_t		*philo;
 	pthread_mutex_t	*right_fork;
-
+	int				forks;
 }t_philo;
 
 /* utils-funcs */
