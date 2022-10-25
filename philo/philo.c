@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:02:23 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 15:08:14 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/10/25 16:26:20 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ void	ft_eat(t_philo *philo)
 	usleep(philo->config.time_to_eat);
 
 	pthread_mutex_lock(&philo->config.timer);
+
 	philo->config.time_ms = get_time();
+	philo->last_eat = philo->config.time_ms;
+
 	pthread_mutex_unlock(&philo->config.timer);
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
@@ -88,6 +91,33 @@ void	default_imput(char **argv, int argc, t_conf *config)
 	config->time_to_sleep = ft_atoi(argv[4]) * 1000;
 	if (argc == 6)
 		config->number_of_time_each_philosopher_must_eat = ft_atoi(argv[5]);
+}
+
+int		ft_seeker(t_philo	*philos)
+{
+	int	i;
+
+	i = 0;
+	while (1)
+	{
+		//printf("test %lli, test 2 %lli\n", get_time(), philos[i].last_eat);
+//		printf("last_eat: %lli\n", philos[i].last_eat);
+//		printf("time: %lli\n", get_time());
+//		printf("sub %lli\n", get_time() - philos[i].last_eat);
+//		printf("time: %lli\n", philos->config.time_to_die);
+		if (philos[i].last_eat == 0)
+			(void)philos[i].last_eat;
+		else if (get_time() - philos[i].last_eat > philos[i].config.time_to_die / 1000)
+		{
+			philos->config.time_ms = get_time();
+			printf("%lli %i died\n", philos->config.time_ms, philos[i].phiid);
+			exit(0);
+		}
+		i++;
+		if (i == philos->config.number_of_philosophers)
+			i = 0;
+	}
+	return (0);
 }
 
 void	ft_philosophy(t_conf *config)
@@ -132,6 +162,7 @@ void	ft_philosophy(t_conf *config)
 		pthread_create(&dining_room->philos[i], NULL, ft_philosopher, (void *)&philos[i]);
 		i += 2;
 	}
+	ft_seeker(philos);
 	i = -1;
 	while (++i < config->number_of_philosophers)
 		pthread_join(dining_room->philos[i], NULL);
