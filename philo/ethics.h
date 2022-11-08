@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:03:34 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 15:28:44 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/08 09:44:02 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_philo {
 	pthread_mutex_t	*right_fork;
 	int				forks;
 	long long		last_eat;
+	long long		first_time;
 }t_philo;
 
 /* utils-funcs */

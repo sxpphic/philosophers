@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/10 10:02:23 by vipereir          #+#    #+#             */
-/*   Updated: 2022/10/25 16:26:20 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/08 10:01:59 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ long int	time_diff(struct timeval *start, struct timeval *end)
 
 void	ft_think(t_philo *philo)
 {
-	printf("%lli %i is thinking\n", philo->config.time_ms, philo->phiid);
+	printf("%lli %i is thinking\n", philo->config.time_ms - philo->first_time, philo->phiid); //talvez eu tire essses first times
 }
 
 long long get_time(void)
@@ -43,12 +43,13 @@ void	take_forks(t_philo *philo)
 	pthread_mutex_lock(&philo->config.timer);
 	philo->config.time_ms = get_time();
 	pthread_mutex_unlock(&philo->config.timer);
-	printf("%lli %i has taken a fork\n", philo->config.time_ms, philo->phiid);
+	printf("%lli %i has taken a fork\n", philo->config.time_ms - philo->first_time, philo->phiid);
+	printf("%lli %i has taken a fork\n", philo->config.time_ms - philo->first_time, philo->phiid);
 }
 
 void	ft_eat(t_philo *philo)
 {
-	printf("%lli %i is eating\n", philo->config.time_ms, philo->phiid);
+	printf("%lli %i is eating\n", philo->config.time_ms - philo->first_time, philo->phiid);
 	usleep(philo->config.time_to_eat);
 
 	pthread_mutex_lock(&philo->config.timer);
@@ -63,7 +64,7 @@ void	ft_eat(t_philo *philo)
 
 void	ft_sleep(t_philo *philo)
 {
-	printf("%lli %i is sleeping\n", philo->config.time_ms, philo->phiid);
+	printf("%lli %i is sleeping\n", philo->config.time_ms - philo->first_time, philo->phiid);
 	usleep(philo->config.time_to_sleep);
 	philo->config.time_ms = get_time();
 }
@@ -73,6 +74,7 @@ void *ft_philosopher(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	philo->first_time = get_time();
 	while (1)
 	{
 		take_forks(philo);
@@ -110,7 +112,7 @@ int		ft_seeker(t_philo	*philos)
 		else if (get_time() - philos[i].last_eat > philos[i].config.time_to_die / 1000)
 		{
 			philos->config.time_ms = get_time();
-			printf("%lli %i died\n", philos->config.time_ms, philos[i].phiid);
+			printf("%lli %i died\n", philos->config.time_ms - philos->first_time, philos[i].phiid);
 			exit(0);
 		}
 		i++;
@@ -183,3 +185,6 @@ int	main(int argc, char *argv[])
 
 	return (0);
 }
+
+
+///asdasdf
