@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 18:05:57 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:52:57 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,19 +69,33 @@ int	ft_init_forks(t_logic *logic)
 
 void	*ft_philosopher(void	*arg)
 {
-	printf("plato\n");
+	t_phi	*phis;
+
+	phis = (t_phi*)arg;
+	printf("plato id:%d\n", phis->index);
 	return (NULL);
 }
 
 int	ft_philo_create(t_logic *logic)
 {
 	int	i;
+	t_phi	*phis;
+
+	phis = malloc(sizeof(t_phi) * logic->number_phi); // tenho q dar free nisso, na verdade achar uma forma melhor de fazer iss.
 
 	i = -1;
 	while (++i < logic->number_phi)
 	{
-		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, NULL) != 0)
+		phis[i].index = i;
+		phis[i].logic = logic;
+	}
+	i = -1;
+	while (++i < logic->number_phi)
+	{
+		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, (void *)&phis[i]) != 0)
 			return (-2);
+		else
+			printf("created %d\n", i);
 	}
 	return (0);
 }
@@ -131,14 +145,16 @@ void	ft_cleaning(t_logic *logic)
 int	ft_check_imputs(char **argv)
 {
 	int	i;
+	int	j;
 
 	i = 1;
+	j = 0;
 	while (argv[i])
 	{
-		while (*argv[i])
+		while (argv[i][j])
 		{
-			if (*argv[i] >= 0x30 && *argv[i] <= 0x39)
-				argv[i]++;
+			if (argv[i][j] >= 0x30 && argv[i][j] <= 0x39)
+				j++;
 			else
 				return (-1);
 		}
@@ -160,7 +176,6 @@ int	main(int argc, char *argv[])
 {
 	t_logic			logic;
 
-	ft_timestamp();
 	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
 		return (ft_error("imput error"));
 	memset(&logic, 0x0, sizeof(t_logic));
@@ -175,6 +190,7 @@ int	main(int argc, char *argv[])
 	if (ft_init_forks(&logic) != 0) // crio os garfos
 		return (ft_error("forks error"));
 
+	printf("created\n");
 	if (ft_philo_create(&logic) != 0) // crio os philosophers
 		return (ft_error("thread error"));
 

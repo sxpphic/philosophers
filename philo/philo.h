@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 11:48:16 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:35:13 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <pthread.h>
 # include <string.h>
 # include <sys/time.h>
+
+
 
 typedef struct	s_logic{
 	/* game rules */
@@ -33,7 +35,16 @@ typedef struct	s_logic{
 	pthread_t		*philos;
 	pthread_mutex_t	*forks;
 
+	/* phi array */
+
 }				t_logic;
+
+typedef struct	s_phi{
+	int		index;
+	t_logic	*logic;
+}t_phi;
+
+
 
 int	ft_atoi(const char *str);
 
