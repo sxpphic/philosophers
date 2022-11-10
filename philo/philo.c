@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 15:31:54 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:08:58 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ int	ft_malloc_zero(t_logic *logic)
 	return (0);
 }
 
-int	ft_malloc_error(void)
+int	ft_error(char *s)
 {
-		printf("malloc_error\n");
+		printf("%s\n", s);
 		return (0);
 }
 
@@ -75,17 +75,20 @@ int	ft_init_forks(t_logic *logic)
 void	*ft_philosopher(void	*arg)
 {
 	printf("plato\n");
-	usleep(100);
 	return (NULL);
 }
 
-void	ft_philo_create(t_logic *logic)
+int	ft_philo_create(t_logic *logic)
 {
 	int	i;
 
 	i = -1;
 	while (++i < logic->number_phi)
-		pthread_create(&logic->philos[i], NULL, ft_philosopher, NULL);
+	{
+		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, NULL) != 0)
+			return (-2);
+	}
+	return (0);
 }
 
 void	set_imput(int argc, char *argv[], t_logic *logic)
@@ -98,6 +101,19 @@ void	set_imput(int argc, char *argv[], t_logic *logic)
 		logic->number_eat = ft_atoi(argv[5]);
 }
 
+int	ft_wait_philo(t_logic *logic)
+{
+	int	i;
+
+	i = -1;
+	while (++i < logic->number_phi)
+	{
+		if (pthread_join(logic->philos[i], NULL) != 0)
+			return (-3);
+	}
+	return (0);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_logic			logic;
@@ -106,18 +122,19 @@ int	main(int argc, char *argv[])
 	if (argc == 5 || argc == 6)
 		set_imput(argc, argv, &logic);
 	else
-	{
-		printf("wrong imput\n");
-		return (0);
-	}
+		return (ft_error("wrong imput"));
 
-	if (ft_malloc_zero(&logic) == -1) // malloc em tudo
-		return (ft_malloc_error());
+	if (ft_malloc_zero(&logic) != 0) // malloc em tudo
+		return (ft_error("malloc error"));
 
-	if (ft_init_forks(&logic) == -1) // crio os garfos
-		return (0);
+	if (ft_init_forks(&logic) != 0) // crio os garfos
+		return (ft_error("forks error"));
 
-	ft_philo_create(&logic);
+	if (ft_philo_create(&logic) != 0) // crio os philosophers
+		return (ft_error("thread error"));
+
+	if (ft_wait_philo(&logic) != 0) // espero os philosophers terminarem
+		return (ft_error("join error"));
 
 return (0);
 }
