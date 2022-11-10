@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 17:08:58 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:51:26 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ int	ft_atoi(const char *str)
 	i = 0;
 	nb = 0;
 	signal = 1;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
-			i++;
 	if (str[i] == '-' || str[i] == '+')
 	{
 		if (str[i] == '-')
@@ -64,10 +62,7 @@ int	ft_init_forks(t_logic *logic)
 	while(++i < logic->number_phi)
 	{
 		if (pthread_mutex_init(&logic->forks[i], NULL) != 0)
-		{
-			printf("mutex_error\n");
 			return (-1);
-		}
 	}
 	return (0);
 }
@@ -114,13 +109,53 @@ int	ft_wait_philo(t_logic *logic)
 	return (0);
 }
 
+int	ft_destroy_forks(t_logic *logic)
+{
+	int	i;
+
+	i = -1;
+	while(++i < logic->number_phi)
+	{
+		if (pthread_mutex_destroy(&logic->forks[i]) != 0)
+			return (-1);
+	}
+	return (0);
+}
+
+void	ft_cleaning(t_logic *logic)
+{
+	free(logic->philos);
+	free(logic->forks);
+}
+
+int	ft_check_imputs(char **argv)
+{
+	int	i;
+
+	i = 1;
+	while (argv[i])
+	{
+		while (*argv[i])
+		{
+			if (*argv[i] >= 0x30 && *argv[i] <= 0x39)
+				argv[i]++;
+			else
+				return (-1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_logic			logic;
 
+	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
+		return (ft_error("imput error"));
 	memset(&logic, 0x0, sizeof(t_logic));
 	if (argc == 5 || argc == 6)
-		set_imput(argc, argv, &logic);
+		set_imput(argc, argv, &logic); // seta os imputs na struct
 	else
 		return (ft_error("wrong imput"));
 
@@ -135,6 +170,12 @@ int	main(int argc, char *argv[])
 
 	if (ft_wait_philo(&logic) != 0) // espero os philosophers terminarem
 		return (ft_error("join error"));
+
+	if (ft_destroy_forks(&logic) != 0) // destroi os garfos
+		return (ft_error("forks_d error"));
+
+
+	ft_cleaning(&logic); // da free nos garfos e filósofos
 
 return (0);
 }
