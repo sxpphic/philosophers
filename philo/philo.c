@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 18:52:57 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:54:57 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,7 @@ int	ft_check_imputs(char **argv)
 			else
 				return (-1);
 		}
+		j = 0;
 		i++;
 	}
 	return (0);
