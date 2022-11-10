@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 18:54:57 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/10 19:20:17 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,14 @@ void	*ft_philosopher(void	*arg)
 	t_phi	*phis;
 
 	phis = (t_phi*)arg;
+	sleep(1);
 	printf("plato id:%d\n", phis->index);
 	return (NULL);
 }
 
-int	ft_philo_create(t_logic *logic)
+int	ft_philo_create(t_logic *logic, t_phi *phis)
 {
 	int	i;
-	t_phi	*phis;
 
 	phis = malloc(sizeof(t_phi) * logic->number_phi); // tenho q dar free nisso, na verdade achar uma forma melhor de fazer iss.
 
@@ -136,7 +136,7 @@ int	ft_destroy_forks(t_logic *logic)
 	return (0);
 }
 
-void	ft_cleaning(t_logic *logic)
+void	ft_cleaning(t_logic *logic, t_phi *phis)
 {
 	free(logic->philos);
 	free(logic->forks);
@@ -176,6 +176,7 @@ void	ft_timestamp(void) // será q ta malfeito isso ?? to tentando usar menos pr
 int	main(int argc, char *argv[])
 {
 	t_logic			logic;
+	t_phi			phis;
 
 	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
 		return (ft_error("imput error"));
@@ -192,7 +193,7 @@ int	main(int argc, char *argv[])
 		return (ft_error("forks error"));
 
 	printf("created\n");
-	if (ft_philo_create(&logic) != 0) // crio os philosophers
+	if (ft_philo_create(&logic, &phis) != 0) // crio os philosophers
 		return (ft_error("thread error"));
 
 	if (ft_wait_philo(&logic) != 0) // espero os philosophers terminarem
@@ -202,7 +203,7 @@ int	main(int argc, char *argv[])
 		return (ft_error("forks_d error"));
 
 
-	ft_cleaning(&logic); // da free nos garfos e filósofos
+	ft_cleaning(&logic, &phis); // da free nos garfos e filósofos
 
 return (0);
 }
