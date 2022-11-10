@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 17:51:26 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:05:57 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,10 +147,20 @@ int	ft_check_imputs(char **argv)
 	return (0);
 }
 
+void	ft_timestamp(void) // será q ta malfeito isso ?? to tentando usar menos processamento mas parece feio dms, o certo ceria multiplicar o sec por 1000 e dps somar eles;
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	printf("%ld", time.tv_sec);
+	printf("%d\n", time.tv_usec / 1000);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_logic			logic;
 
+	ft_timestamp();
 	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
 		return (ft_error("imput error"));
 	memset(&logic, 0x0, sizeof(t_logic));
