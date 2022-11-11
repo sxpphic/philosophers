@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/11 15:40:41 by sphh             ###   ########.fr       */
+/*   Updated: 2022/11/11 15:53:27 by sphh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,30 +69,32 @@ int	ft_init_forks(t_logic *logic)
 
 void	*ft_philosopher(void	*arg)
 {
-//	t_phi	*phis;
+	t_phi	*phis;
 
-//	phis = (t_phi*)arg;
+	phis = (t_phi*)arg;
 	sleep(1);
-	printf("plato id\n");
+	printf("plato id: %d\n", phis->index);
 	return (NULL);
 }
 
-int	ft_philo_create(t_logic *logic, t_phi *phis)
+int	ft_philo_create(t_logic *logic, t_phi **philoo)
 {
 	int	i;
+	t_phi	*phis;
 
-//	phis = malloc(sizeof(t_phi) * logic->number_phi); // tenho q dar free nisso, na verdade achar uma forma melhor de fazer iss.
+	phis = (*philoo);
 
-	i = -1;
-/*	while (++i < logic->number_phi)
-	{
-		phis[i].index = i;
-		phis[i].logic = logic;
-	}*/
 	i = -1;
 	while (++i < logic->number_phi)
 	{
-		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, NULL )!= 0)
+		phis[i].index = i;
+		phis[i].logic = logic;
+	}
+
+	i = -1;
+	while (++i < logic->number_phi)
+	{
+		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, (void *)&phis[i])!= 0)
 			return (-2);
 		else
 			printf("created %d\n", i);
