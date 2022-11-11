@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 19:20:17 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/11 15:40:41 by sphh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,11 @@ int	ft_init_forks(t_logic *logic)
 
 void	*ft_philosopher(void	*arg)
 {
-	t_phi	*phis;
+//	t_phi	*phis;
 
-	phis = (t_phi*)arg;
+//	phis = (t_phi*)arg;
 	sleep(1);
-	printf("plato id:%d\n", phis->index);
+	printf("plato id\n");
 	return (NULL);
 }
 
@@ -81,18 +81,18 @@ int	ft_philo_create(t_logic *logic, t_phi *phis)
 {
 	int	i;
 
-	phis = malloc(sizeof(t_phi) * logic->number_phi); // tenho q dar free nisso, na verdade achar uma forma melhor de fazer iss.
+//	phis = malloc(sizeof(t_phi) * logic->number_phi); // tenho q dar free nisso, na verdade achar uma forma melhor de fazer iss.
 
 	i = -1;
-	while (++i < logic->number_phi)
+/*	while (++i < logic->number_phi)
 	{
 		phis[i].index = i;
 		phis[i].logic = logic;
-	}
+	}*/
 	i = -1;
 	while (++i < logic->number_phi)
 	{
-		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, (void *)&phis[i]) != 0)
+		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, NULL )!= 0)
 			return (-2);
 		else
 			printf("created %d\n", i);
@@ -136,10 +136,11 @@ int	ft_destroy_forks(t_logic *logic)
 	return (0);
 }
 
-void	ft_cleaning(t_logic *logic, t_phi *phis)
+void	ft_cleaning(t_logic *logic, t_phi **phis)
 {
 	free(logic->philos);
 	free(logic->forks);
+	free(*phis);
 }
 
 int	ft_check_imputs(char **argv)
@@ -173,10 +174,15 @@ void	ft_timestamp(void) // será q ta malfeito isso ?? to tentando usar menos pr
 	printf("%d\n", time.tv_usec / 1000);
 }
 
+int	phis_create(t_phi **phis, t_logic *logic)
+{
+	*phis = malloc(sizeof(t_phi) * logic->number_phi);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_logic			logic;
-	t_phi			phis;
+	t_phi			*phis;
 
 	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
 		return (ft_error("imput error"));
@@ -188,6 +194,8 @@ int	main(int argc, char *argv[])
 
 	if (ft_malloc_zero(&logic) != 0) // malloc em tudo
 		return (ft_error("malloc error"));
+	
+	phis_create(&phis, &logic);
 
 	if (ft_init_forks(&logic) != 0) // crio os garfos
 		return (ft_error("forks error"));
@@ -205,5 +213,5 @@ int	main(int argc, char *argv[])
 
 	ft_cleaning(&logic, &phis); // da free nos garfos e filósofos
 
-return (0);
+	return (0);
 }
