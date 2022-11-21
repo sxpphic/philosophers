@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/21 11:40:59 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/21 12:04:03 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct	s_logic{
 
 	pthread_t		*philos;
 	pthread_mutex_t	*forks;
+	int				*is_fork_locked;
 	pthread_mutex_t	print;
 	pthread_mutex_t	see_death;
 
@@ -39,6 +40,7 @@ typedef struct	s_logic{
 
 typedef struct	s_phi{
 	int		index;
+	int		fork;
 	int		death;
 	t_logic	*logic;
 }t_phi;
