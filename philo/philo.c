@@ -6,13 +6,11 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/11 17:48:26 by sphh             ###   ########.fr       */
+/*   Updated: 2022/11/21 11:22:57 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	ft_timestamp(void);
 
 int	ft_atoi(const char *str)
 {
@@ -70,14 +68,49 @@ int	ft_init_forks(t_logic *logic)
 	return (0);
 }
 
+void	take_forks(t_phi *phis)
+{
+
+	pthread_mutex_lock(&phis->logic->forks[phis->index]);
+	printf("%ld %i has taken a fork\n", get_time(), phis->index);
+	if (phis->index == 0)
+		pthread_mutex_lock(&phis->logic->forks[phis->logic->number_phi - 1]);
+	else
+		pthread_mutex_lock(&phis->logic->forks[phis->index - 1]);
+	get_time();
+	printf("%ld %i has taken a fork\n", get_time(), phis->index);
+}
+
+void	ft_eat(t_phi	*phis)
+{
+	printf("%ld %i is eating\n", get_time(), phis->index);
+	usleep(phis->logic->t_eat); // criart o smart sleep com uma variavel de controle de morte
+	pthread_mutex_unlock(&phis->logic->forks[phis->index]);
+	if (phis->index == 0)
+		pthread_mutex_unlock(&phis->logic->forks[phis->logic->number_phi - 1]);
+	else
+		pthread_mutex_unlock(&phis->logic->forks[phis->index - 1]);
+	printf("%ld %i finished eating\n", get_time(), phis->index);
+
+}
+
+void	ft_sleep(t_phi *phis)
+{
+	(void)phis;
+}
+
 void	*ft_philosopher(void	*arg)
 {
 	t_phi	*phis;
 
 	phis = (t_phi*)arg;
-	ft_timestamp();
-	sleep(1);
-	printf("plato id: %d\n", phis->index);
+	while (1)
+	{
+		take_forks(phis);
+		ft_eat(phis);
+	}
+
+
 	return (NULL);
 }
 
@@ -171,13 +204,12 @@ int	ft_check_imputs(char **argv)
 	return (0);
 }
 
-void	ft_timestamp(void) // será q ta malfeito isso ?? to tentando usar menos processamento mas parece feio dms, o certo ceria multiplicar o sec por 1000 e dps somar eles;
+long	get_time(void) // será q ta malfeito isso ?? to tentando usar menos processamento mas parece feio dms, o certo ceria multiplicar o sec por 1000 e dps somar eles;
 {
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	printf("%ld", time.tv_sec);
-	printf("%ld\n", time.tv_usec / 1000);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
 int	main(int argc, char *argv[])
@@ -185,6 +217,7 @@ int	main(int argc, char *argv[])
 	t_logic			logic;
 	t_phi			*phis;
 
+	printf("%ld\n", get_time());
 	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
 		return (ft_error("imput error"));
 	memset(&logic, 0x0, sizeof(t_logic));

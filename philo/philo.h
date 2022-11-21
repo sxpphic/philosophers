@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/10 18:35:13 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/21 10:57:51 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ typedef struct	s_phi{
 
 
 
-int	ft_atoi(const char *str);
+long	get_time(void);
+int		ft_atoi(const char *str);
 
 
 #endif
