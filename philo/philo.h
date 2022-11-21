@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/21 12:04:03 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/21 12:14:42 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct	s_logic{
 
 typedef struct	s_phi{
 	int		index;
-	int		fork;
+	int		holding_forks;
 	int		death;
 	t_logic	*logic;
 }t_phi;
