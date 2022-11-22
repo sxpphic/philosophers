@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/22 11:18:54 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/22 14:22:05 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,7 @@ int	ft_philo_create(t_logic *logic, t_phi **philoo)
 	{
 		phis[i].index = i;
 		phis[i].logic = logic;
+		phis[i].last_eat = get_time();
 	}
 
 	i = -1;
@@ -240,30 +241,22 @@ long	get_time(void) // será q ta malfeito isso ?? to tentando usar menos proces
 void	*ft_seeker(void	*arg)
 {
 	t_phi	*phis;
-
-	phis = (t_phi*)arg;
-
-
-//	sleep(1);
-//	while (1)
-//		printf("id: %i\n", phis->index);
-	int		i;
 	long	time_die;
 	long	time;
 
-	i = 0;
+	phis = (t_phi*)arg;
+
 	time_die = phis->logic->t_die / 1000;
-	usleep(phis->logic->t_die + 10000);
+//	usleep(phis->logic->t_die + 10000);
 	while (1)
 	{
 		time = get_time();
 		if (time - phis->last_eat > time_die)
 		{
 			printf("diff: %ld\n", time - phis->last_eat);
-			printf("%ld %i died\n", time, i + 1);
+			printf("%ld %i died\n", time, phis->index + 1);
 			exit(0);
 		}
-		i++;
 	}
 	return (NULL);
 }
@@ -289,13 +282,17 @@ int	main(int argc, char *argv[])
 	if (ft_init_forks(&logic) != 0) // crio os garfos
 		return (ft_error("forks error"));
 
+
 	if (ft_philo_create(&logic, &phis) != 0) // crio os philosophers
 		return (ft_error("thread error"));
 
 	int	i;
 	i = -1;
+//	usleep(logic.t_die);
 	while (++i < logic.number_phi)
 		pthread_create(&seeker[i], NULL, ft_seeker, &phis[i]);
+
+
 
 	if (ft_wait_philo(&logic) != 0) // espero os philosophers terminarem
 		return (ft_error("join error"));
