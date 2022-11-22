@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/21 14:20:00 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/22 11:18:54 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,25 @@ int	ft_init_forks(t_logic *logic)
 	return (0);
 }
 
+int	smart_sleep(long	time, t_phi *phis)
+{
+	register int	i;
+
+	(void)phis;
+	i = time / 1000;
+	while (i)
+	{
+		usleep(1000);
+		i--;
+	//	if (phis->death == 1)
+	//	{
+	//		printf("%ld %i died\n", get_time(), phis->index + 1);
+	//		return(1);
+	//	}
+	}
+	return (0);
+}
+
 void	take_forks(t_phi *phis)
 {
 	pthread_mutex_lock(&phis->logic->forks[phis->index]);
@@ -82,8 +101,13 @@ void	take_forks(t_phi *phis)
 
 void	ft_eat(t_phi	*phis)
 {
-	printf("%ld %i is eating\n", get_time(), phis->index + 1);
-	usleep(phis->logic->t_eat); // criart o smart sleep com uma variavel de controle de morte
+	long	eat;
+	eat = get_time();
+	phis->last_eat = eat;
+	printf("%ld %i is eating\n", eat, phis->index + 1);
+//	if (smart_sleep(phis->logic->t_eat, phis))
+//		return ;
+	usleep(phis->logic->t_eat);
 	pthread_mutex_unlock(&phis->logic->forks[phis->index]);
 	if (phis->index == 0)
 		pthread_mutex_unlock(&phis->logic->forks[phis->logic->number_phi - 1]);
@@ -114,8 +138,6 @@ void	*ft_philosopher(void	*arg)
 		ft_sleep(phis);
 		ft_think(phis);
 	}
-
-
 	return (NULL);
 }
 
@@ -138,8 +160,6 @@ int	ft_philo_create(t_logic *logic, t_phi **philoo)
 	{
 		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, (void *)&phis[i])!= 0)
 			return (-2);
-		else
-			printf("created %d\n", i);
 	}
 	return (0);
 }
@@ -217,12 +237,43 @@ long	get_time(void) // será q ta malfeito isso ?? to tentando usar menos proces
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
+void	*ft_seeker(void	*arg)
+{
+	t_phi	*phis;
+
+	phis = (t_phi*)arg;
+
+
+//	sleep(1);
+//	while (1)
+//		printf("id: %i\n", phis->index);
+	int		i;
+	long	time_die;
+	long	time;
+
+	i = 0;
+	time_die = phis->logic->t_die / 1000;
+	usleep(phis->logic->t_die + 10000);
+	while (1)
+	{
+		time = get_time();
+		if (time - phis->last_eat > time_die)
+		{
+			printf("diff: %ld\n", time - phis->last_eat);
+			printf("%ld %i died\n", time, i + 1);
+			exit(0);
+		}
+		i++;
+	}
+	return (NULL);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_logic			logic;
 	t_phi			*phis;
+	pthread_t		*seeker;
 
-	printf("%ld\n", get_time());
 	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
 		return (ft_error("imput error"));
 	memset(&logic, 0x0, sizeof(t_logic));
@@ -231,14 +282,20 @@ int	main(int argc, char *argv[])
 	else
 		return (ft_error("wrong imput"));
 
+	seeker = malloc(sizeof(pthread_t) * logic.number_phi);
 	if (ft_malloc_zero(&logic, &phis) != 0) // malloc em tudo
 		return (ft_error("malloc error"));
-	
+
 	if (ft_init_forks(&logic) != 0) // crio os garfos
 		return (ft_error("forks error"));
 
 	if (ft_philo_create(&logic, &phis) != 0) // crio os philosophers
 		return (ft_error("thread error"));
+
+	int	i;
+	i = -1;
+	while (++i < logic.number_phi)
+		pthread_create(&seeker[i], NULL, ft_seeker, &phis[i]);
 
 	if (ft_wait_philo(&logic) != 0) // espero os philosophers terminarem
 		return (ft_error("join error"));
@@ -246,8 +303,15 @@ int	main(int argc, char *argv[])
 	if (ft_destroy_forks(&logic) != 0) // destroi os garfos
 		return (ft_error("forks_d error"));
 
-
 	ft_cleaning(&logic, &phis); // da free nos garfos e filósofos
 
 	return (0);
 }
+
+/*int	main(void)
+{
+	printf("%ld\n", get_time());
+	usleep();
+	printf("%ld\n", get_time());
+	return (0);
+}*/
