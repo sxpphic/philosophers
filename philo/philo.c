@@ -6,49 +6,13 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/22 14:22:05 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/22 14:52:31 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_atoi(const char *str)
-{
-	int	i;
-	int	nb;
-	int	signal;
 
-	i = 0;
-	nb = 0;
-	signal = 1;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			signal = signal * -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		nb = nb + (str[i] - '0');
-		i++;
-		if (str[i] >= '0' && str[i] <= '9')
-			nb = nb * 10;
-	}
-	return (nb);
-}
-
-int	ft_malloc_zero(t_logic *logic, t_phi **phis)
-{
-	*phis = malloc(sizeof(t_phi) * logic->number_phi);
-	logic->philos = malloc(sizeof(pthread_t) * logic->number_phi);
-	logic->is_fork_locked = malloc(sizeof(int) * logic->number_phi);
-	if (!logic->philos)
-		return (-1);
-	logic->forks = malloc(sizeof(pthread_mutex_t) * logic->number_phi);
-	if (!logic->forks)
-		return (-1);
-	return (0);
-}
 
 int	ft_error(char *s)
 {
@@ -90,12 +54,12 @@ int	smart_sleep(long	time, t_phi *phis)
 
 void	take_forks(t_phi *phis)
 {
+	printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
 	pthread_mutex_lock(&phis->logic->forks[phis->index]);
 	if (phis->index == 0)
 		pthread_mutex_lock(&phis->logic->forks[phis->logic->number_phi - 1]);
 	else
 		pthread_mutex_lock(&phis->logic->forks[phis->index - 1]);
-	printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
 	printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
 }
 
@@ -105,8 +69,6 @@ void	ft_eat(t_phi	*phis)
 	eat = get_time();
 	phis->last_eat = eat;
 	printf("%ld %i is eating\n", eat, phis->index + 1);
-//	if (smart_sleep(phis->logic->t_eat, phis))
-//		return ;
 	usleep(phis->logic->t_eat);
 	pthread_mutex_unlock(&phis->logic->forks[phis->index]);
 	if (phis->index == 0)
@@ -156,11 +118,12 @@ int	ft_philo_create(t_logic *logic, t_phi **philoo)
 		phis[i].last_eat = get_time();
 	}
 
-	i = -1;
-	while (++i < logic->number_phi)
+	i = 0;
+	while (i < logic->number_phi)
 	{
 		if (pthread_create(&logic->philos[i], NULL, ft_philosopher, (void *)&phis[i])!= 0)
 			return (-2);
+		i++;
 	}
 	return (0);
 }
