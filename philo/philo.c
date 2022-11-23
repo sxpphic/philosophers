@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/22 17:35:11 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/23 09:02:19 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,32 +48,20 @@ int	smart_sleep(long	time, t_phi *phis)
 
 void	take_forks(t_phi *phis)
 {
-	while ((phis->logic->is_fork_locked[phis->index] == 0 && phis->logic->is_fork_locked[phis->index - 1] == 0) || (phis->logic->is_fork_locked[phis->index] == 0 && phis->logic->is_fork_locked[phis->logic->number_phi -1] == 0))
+	printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
+	pthread_mutex_lock(&phis->logic->forks[phis->index]);
+	phis->logic->is_fork_locked[phis->index] = 1;
+	if (phis->index == 0)
 	{
-		if (!phis->logic->is_fork_locked[phis->index])
-		{
-			printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
-			pthread_mutex_lock(&phis->logic->forks[phis->index]);
-			phis->logic->is_fork_locked[phis->index] = 1;
-		}
-		if (phis->index == 0)
-		{
-			if (!phis->logic->is_fork_locked[phis->logic->number_phi -1])
-			{
-				pthread_mutex_lock(&phis->logic->forks[phis->logic->number_phi - 1]);
-				phis->logic->is_fork_locked[phis->logic->number_phi -1] = 1;
-				printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
-			}
-		}
-		else
-		{
-			if (!phis->logic->is_fork_locked[phis->index - 1])
-			{
-				pthread_mutex_lock(&phis->logic->forks[phis->index - 1]);
-				phis->logic->is_fork_locked[phis->index - 1] = 1;
-				printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
-			}
-		}
+		pthread_mutex_lock(&phis->logic->forks[phis->logic->number_phi - 1]);
+		phis->logic->is_fork_locked[phis->logic->number_phi -1] = 1;
+		printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
+	}
+	else
+	{
+		pthread_mutex_lock(&phis->logic->forks[phis->index - 1]);
+		phis->logic->is_fork_locked[phis->index - 1] = 1;
+		printf("%ld %i has taken a fork\n", get_time(), phis->index + 1);
 	}
 }
 
