@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/22 14:53:16 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/23 14:22:17 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct	s_logic{
 
 	/* philosophers and forks arrays*/
 
+	/**/
 	pthread_t		*philos;
 	pthread_mutex_t	*forks;
 	int				*is_fork_locked;
