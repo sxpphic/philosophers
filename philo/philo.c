@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/23 09:02:19 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/24 15:35:35 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,25 +23,6 @@ int	ft_init_forks(t_logic *logic)
 	{
 		if (pthread_mutex_init(&logic->forks[i], NULL) != 0)
 			return (-1);
-	}
-	return (0);
-}
-
-int	smart_sleep(long	time, t_phi *phis)
-{
-	register int	i;
-
-	(void)phis;
-	i = time / 1000;
-	while (i)
-	{
-		usleep(1000);
-		i--;
-	//	if (phis->death == 1)
-	//	{
-	//		printf("%ld %i died\n", get_time(), phis->index + 1);
-	//		return(1);
-	//	}
 	}
 	return (0);
 }
@@ -72,11 +53,6 @@ void	ft_eat(t_phi	*phis)
 	phis->last_eat = eat;
 	printf("%ld %i is eating\n", eat, phis->index + 1);
 	usleep(phis->logic->t_eat);
-	pthread_mutex_unlock(&phis->logic->forks[phis->index]);
-	if (phis->index == 0)
-		pthread_mutex_unlock(&phis->logic->forks[phis->logic->number_phi - 1]);
-	else
-		pthread_mutex_unlock(&phis->logic->forks[phis->index - 1]);
 }
 
 void	ft_sleep(t_phi *phis)
@@ -195,52 +171,21 @@ int	ft_check_imputs(char **argv)
 	return (0);
 }
 
-long	get_time(void) // será q ta malfeito isso ?? to tentando usar menos processamento mas parece feio dms, o certo ceria multiplicar o sec por 1000 e dps somar eles;
-{
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
-}
-
-void	*ft_seeker(void	*arg)
-{
-	t_phi	*phis;
-	long	time_die;
-	long	time;
-
-	phis = (t_phi*)arg;
-
-	time_die = phis->logic->t_die / 1000;
-//	usleep(phis->logic->t_die + 10000);
-	while (1)
-	{
-		time = get_time();
-		if (time - phis->last_eat > time_die)
-		{
-			printf("diff: %ld\n", time - phis->last_eat);
-			printf("%ld %i died\n", time, phis->index + 1);
-			exit(0);
-		}
-	}
-	return (NULL);
-}
-
 int	main(int argc, char *argv[])
 {
 	t_logic			logic;
 	t_phi			*phis;
-	pthread_t		*seeker;
 
 	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
 		return (ft_error("imput error"));
+
 	memset(&logic, 0x0, sizeof(t_logic));
+
 	if (argc == 5 || argc == 6)
 		set_imput(argc, argv, &logic); // seta os imputs na struct
 	else
 		return (ft_error("wrong imput"));
 
-	seeker = malloc(sizeof(pthread_t) * logic.number_phi);
 	if (ft_malloc_zero(&logic, &phis) != 0) // malloc em tudo
 		return (ft_error("malloc error"));
 
@@ -250,13 +195,6 @@ int	main(int argc, char *argv[])
 
 	if (ft_philo_create(&logic, &phis) != 0) // crio os philosophers
 		return (ft_error("thread error"));
-
-	int	i;
-	i = -1;
-//	usleep(logic.t_die);
-	while (++i < logic.number_phi)
-		pthread_create(&seeker[i], NULL, ft_seeker, &phis[i]);
-
 
 
 	if (ft_wait_philo(&logic) != 0) // espero os philosophers terminarem
@@ -269,11 +207,3 @@ int	main(int argc, char *argv[])
 
 	return (0);
 }
-
-/*int	main(void)
-{
-	printf("%ld\n", get_time());
-	usleep();
-	printf("%ld\n", get_time());
-	return (0);
-}*/
