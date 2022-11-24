@@ -2,8 +2,9 @@
 
 if [ $1 == 1 ]
 then
-	echo "test ./philo 1 800 200 200"
-	echo "The philosopher should not eat and should die"
+	echo "test ./philo 1 800 200 200 1000"
+	echo "The philosopher should not eat and should die today"
+	echo "new mensage"
 	sleep 1
 	./philo 1 800 200 200
 	echo "end test"
