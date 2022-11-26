@@ -175,6 +175,7 @@ int	main(int argc, char *argv[])
 {
 	t_logic			logic;
 	t_phi			*phis;
+	t_table			table;
 
 	if (ft_check_imputs(argv) != 0) //valida se há somente números no imput
 		return (ft_error("imput error"));
