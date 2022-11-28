@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/28 11:09:58 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/28 16:02:09 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,14 @@ typedef struct	s_phi{
 
 	pthread_mutex_t	*l_fork;
 	pthread_t		*philo;
+	struct s_phi	*l_philo;
 	pthread_mutex_t	*r_fork;
+	int				f;
 	pthread_mutex_t	*print;
 	int				id;
 	int				n_eats;
 	long			last_eat;
 	struct s_logic	*logic;
-//	typedef struct s_phi	*next;
 }				t_phi;
 
 long	get_time(void);
@@ -61,6 +62,7 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos);
 int	ft_wait_philo(t_table *table, t_logic *logic);
 int	ft_destroy_forks(t_table *table, t_logic *logic);
 void	*ft_philosopher(void	*arg);
+void	mutex_print(t_phi *philo, char *s);
 
 
 #endif

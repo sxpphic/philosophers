@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:11:55 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/28 15:16:06 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/28 16:02:17 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,11 +134,18 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 	{
 		phis[i].id = i;
 		if (i > 0)
+		{
 			phis[i].l_fork = &table->forks[i - 1];
+			phis[i].l_philo = &phis[i - 1];
+		}
 		else
+		{
 			phis[i].l_fork = &table->forks[logic->number_phi - 1];
+			phis[i].l_philo = &phis[logic->number_phi - 1];
+		}
 		phis[i].philo = &table->philos[i];
 		phis[i].r_fork = &table->forks[i];
+		phis[i].f = 1;
 		phis[i].n_eats = 0;
 		phis[i].last_eat = get_time();
 		(*philos)[i].print = &table->print;
@@ -180,3 +187,9 @@ int	ft_destroy_forks(t_table *table, t_logic *logic)
 	return (0);
 }
 
+void	mutex_print(t_phi *philo, char *s)
+{
+	pthread_mutex_lock(philo->print);
+	printf("%ld %i %s\n", get_time(), philo->id + 1, s);
+	pthread_mutex_unlock(philo->print);
+}

@@ -6,35 +6,53 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/28 15:14:36 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/28 16:27:18 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/*
+void s_sleep(t_phi *philo, unsigned long time)
+{
+	
+}
+*/
+
 void	take_forks(t_phi *philo)
 {
-	pthread_mutex_lock(philo->print);
-//	pthread_mutex_lock(philo->l_fork);
-	printf("%ld %i has taken a fork\n", get_time(), philo->id + 1);
+	if (philo->f && philo->l_philo->f)
+	{
+		pthread_mutex_lock(philo->r_fork);
+		pthread_mutex_lock(philo->l_fork);
+		philo->f = 0;
+		philo->l_philo->f = 0;
+		mutex_print(philo, "has taken a fork");
+		mutex_print(philo, "has taken a fork");
+	}
 }
 
 void	ft_eat(t_phi *philo)
 {
-	pthread_mutex_lock(philo->print);
-	printf("%ld %i is eating\n", get_time(), philo->id + 1);
+	mutex_print(philo, "is eating");
+	usleep(philo->logic->t_eat);
+	philo->f = 1;
+	philo->l_philo->f = 1;
+	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->l_fork);
+	//sleep
 }
 
 void	ft_sleep(t_phi *philo)
 {
-	pthread_mutex_lock(philo->print);
-	printf("%ld %i is sleeping\n", get_time(), philo->id + 1);
+	mutex_print(philo, "is sleeping");
+	usleep(philo->logic->t_slp);
+	//sleep
 }
 
 void	ft_think(t_phi *philo)
 {
-	pthread_mutex_lock(philo->print);
-	printf("%ld %i is thinking\n", get_time(), philo->id + 1);
+	mutex_print(philo, "is thinking");
 }
 
 void	*ft_philosopher(void	*arg)
@@ -44,10 +62,14 @@ void	*ft_philosopher(void	*arg)
 	philo = (t_phi*)arg;
 	while (1)
 	{
-		take_forks(philo);
-		ft_eat(philo);
-		ft_sleep(philo);
-		ft_think(philo);
+		while (philo->f || philo->l_philo->f)
+			take_forks(philo);
+		if (!philo->f && !philo->l_philo->f)
+		{
+			ft_eat(philo);
+			ft_sleep(philo);
+			ft_think(philo);
+		}
 	}
 	return (NULL);
 }
@@ -78,3 +100,5 @@ int	main(int argc, char *argv[])
 	ft_cleaning(&table, &philos);
 	return (0);
 }
+
+//makefile relink

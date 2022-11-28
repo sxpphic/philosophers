@@ -11,8 +11,8 @@ CFLAGS =	-Wall -Wextra -Werror -pthread
 
 RM =		rm -rf
 
-(NAME):
-			$(CC) $(CFLAGS) $(SRC) -o $(NAME)
+$(NAME):		$(SRC)
+				$(CC) $(CFLAGS) $(SRC) -o $(NAME)
 
 all:		$(NAME)
 
