@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/24 15:56:39 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/28 11:09:58 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,31 @@ typedef struct	s_table{
 typedef struct	s_phi{
 
 	pthread_mutex_t	*l_fork;
-	pthread_mutex_t	*philo;
+	pthread_t		*philo;
 	pthread_mutex_t	*r_fork;
 	pthread_mutex_t	*print;
-	int						id;
-	int						n_eats;
-	long					last_eat;
-	typedef struct s_logic	*logic;
-	typedef struct s_phi	*next;
-}				t_phi_list;
+	int				id;
+	int				n_eats;
+	long			last_eat;
+	struct s_logic	*logic;
+//	typedef struct s_phi	*next;
+}				t_phi;
 
 long	get_time(void);
 int		ft_atoi(const char *str);
-int	ft_malloc_zero(t_logic *logic, t_phi **phis);
+int	ft_malloc_zero(t_table *table, t_logic *logic, t_phi **phis);
 int	ft_error(char *s);
+
+
+
+int	ft_check_imputs(char **argv);
+void	ft_cleaning(t_table *table, t_phi **phis);
+void	set_imput(int argc, char *argv[], t_logic *logic);
+int	ft_init_forks(t_table *table, t_logic *logic);
+int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos);
+int	ft_wait_philo(t_table *table, t_logic *logic);
+int	ft_destroy_forks(t_table *table, t_logic *logic);
+void	*ft_philosopher(void	*arg);
 
 
 #endif
