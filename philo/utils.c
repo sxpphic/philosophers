@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:11:55 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/28 11:08:40 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/28 15:16:06 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ int	ft_init_forks(t_table *table, t_logic *logic)
 	int	i;
 
 	i = -1;
+	if (pthread_mutex_init(&table->print, NULL) != 0)
+		return (-1);
 	while(++i < logic->number_phi)
 	{
 		if (pthread_mutex_init(&table->forks[i], NULL) != 0)
@@ -139,7 +141,7 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 		phis[i].r_fork = &table->forks[i];
 		phis[i].n_eats = 0;
 		phis[i].last_eat = get_time();
-		phis[i].print = &table->print;
+		(*philos)[i].print = &table->print;
 		phis[i].logic = logic;
 	}
 	i = 0;

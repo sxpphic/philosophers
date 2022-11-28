@@ -6,44 +6,48 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/28 11:05:12 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/28 15:14:36 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-
-
-void	take_forks(t_phi *phis)
+void	take_forks(t_phi *philo)
 {
+	pthread_mutex_lock(philo->print);
+//	pthread_mutex_lock(philo->l_fork);
+	printf("%ld %i has taken a fork\n", get_time(), philo->id + 1);
 }
 
-void	ft_eat(t_phi	*phis)
+void	ft_eat(t_phi *philo)
 {
+	pthread_mutex_lock(philo->print);
+	printf("%ld %i is eating\n", get_time(), philo->id + 1);
 }
 
-void	ft_sleep(t_phi *phis)
+void	ft_sleep(t_phi *philo)
 {
-	printf("%ld %i is sleeping\n", get_time(), phis->index + 1);
-	usleep(phis->logic->t_slp);
+	pthread_mutex_lock(philo->print);
+	printf("%ld %i is sleeping\n", get_time(), philo->id + 1);
 }
 
-void	ft_think(t_phi *phis)
+void	ft_think(t_phi *philo)
 {
-	printf("%ld %i is thinking\n", get_time(), phis->index + 1);
+	pthread_mutex_lock(philo->print);
+	printf("%ld %i is thinking\n", get_time(), philo->id + 1);
 }
 
 void	*ft_philosopher(void	*arg)
 {
-	t_phi	*phis;
+	t_phi	*philo;
 
-	phis = (t_phi*)arg;
+	philo = (t_phi*)arg;
 	while (1)
 	{
-		take_forks(phis);
-		ft_eat(phis);
-		ft_sleep(phis);
-		ft_think(phis);
+		take_forks(philo);
+		ft_eat(philo);
+		ft_sleep(philo);
+		ft_think(philo);
 	}
 	return (NULL);
 }
