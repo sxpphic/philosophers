@@ -21,7 +21,7 @@ void s_sleep(t_phi *philo, unsigned long time)
 
 void	take_forks(t_phi *philo)
 {
-	if (philo->f && philo->l_philo->f)
+//	if (philo->f && philo->l_philo->f)
 	{
 		pthread_mutex_lock(philo->r_fork);
 		pthread_mutex_lock(philo->l_fork);
@@ -35,10 +35,11 @@ void	take_forks(t_phi *philo)
 void	ft_eat(t_phi *philo)
 {
 	mutex_print(philo, "is eating");
-	philo->last_eat = get_time();
-	usleep(philo->logic->t_eat);
 	philo->f = 1;
 	philo->l_philo->f = 1;
+	philo->last_eat = get_time();
+	philo->n_eats++;
+	usleep(philo->logic->t_eat);
 	pthread_mutex_unlock(philo->r_fork);
 	pthread_mutex_unlock(philo->l_fork);
 	//sleep
@@ -63,29 +64,35 @@ void	*ft_philosopher(void	*arg)
 	philo = (t_phi*)arg;
 	while (1)
 	{
-		while (philo->f || philo->l_philo->f)
+//		while (philo->f || philo->l_philo->f)
 			take_forks(philo);
-		if (!philo->f && !philo->l_philo->f)
-		{
+//		if (philo->f == 0 && philo->l_philo->f == 0)
+//		{
 			ft_eat(philo);
 			ft_sleep(philo);
 			ft_think(philo);
-		}
+//		}
 	}
 	return (NULL);
 }
 
+
+int	ft_everybody_eats();
 
 void	*ft_seeker(void *arg)
 {
 	t_phi	*philos;
 	int		n_phi;
 	int		i;
+	int		n_eats;
 	long	t_die;
+
 
 	philos = (t_phi *)arg;
 	n_phi = philos[0].logic->number_phi;
 	t_die = philos[0].logic->t_die / 1000;
+	n_eats = philos[0].logic->number_eat;
+	(void)n_eats;
 	i = 0;
 	while (i < n_phi)
 	{
@@ -95,7 +102,12 @@ void	*ft_seeker(void *arg)
 			printf("%ld %i %s\n", get_time(), philos[i].id + 1, "died");
 			exit(0); //  função de acabar o jogo
 		}
-
+//		else if (philos[i].n_eats == n_eats && n_eats > 0 )
+//		{
+//			pthread_mutex_lock(philos[i].print);
+//			exit(0); //  função de acabar o jogo
+//		}
+//		printf("philo %i, time: %ld\n", i, get_time());
 		i++;
 		if (i == n_phi)
 			i = 0;

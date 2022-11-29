@@ -156,7 +156,14 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 	{
 		if (pthread_create(&table->philos[i], NULL, ft_philosopher, (void *)&phis[i]) != 0)
 			return (-2);
-		i++;
+		i += 2;
+	}
+	i = 1;
+	while (i < logic->number_phi)
+	{
+		if (pthread_create(&table->philos[i], NULL, ft_philosopher, (void *)&phis[i]) != 0)
+			return (-2);
+		i += 2;
 	}
 	return (0);
 }
@@ -189,7 +196,7 @@ int	ft_destroy_forks(t_table *table, t_logic *logic)
 
 void	mutex_print(t_phi *philo, char *s)
 {
-	pthread_mutex_lock(philo->print);
+//	pthread_mutex_lock(philo->print);
 	printf("%ld %i %s\n", get_time(), philo->id + 1, s);
-	pthread_mutex_unlock(philo->print);
+//	pthread_mutex_unlock(philo->print);
 }
