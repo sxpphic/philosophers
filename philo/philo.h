@@ -31,6 +31,7 @@ typedef struct	s_table{
 	pthread_t		*philos;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
+	int				print_var;
 }				t_table;
 
 typedef struct	s_phi{
@@ -40,11 +41,13 @@ typedef struct	s_phi{
 	struct s_phi	*l_philo;
 	pthread_mutex_t	*r_fork;
 	int				f;
+	int				*print_var;
 	pthread_mutex_t	*print;
 	int				id;
 	int				n_eats;
 	long			last_eat;
 	struct s_logic	*logic;
+	int				end;
 }				t_phi;
 
 long	get_time(void);

@@ -129,6 +129,7 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 	t_phi	*phis;
 
 	phis = (*philos);
+	table->print_var = 1;
 	i = -1;
 	while (++i < logic->number_phi)
 	{
@@ -147,8 +148,10 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 		phis[i].r_fork = &table->forks[i];
 		phis[i].f = 1;
 		phis[i].n_eats = 0;
+		phis[i].end = 0;
 		phis[i].last_eat = get_time();
 		(*philos)[i].print = &table->print;
+		phis[i].print_var = &table->print_var;
 		phis[i].logic = logic;
 	}
 	i = 0;

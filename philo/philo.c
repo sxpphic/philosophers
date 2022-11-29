@@ -62,16 +62,12 @@ void	*ft_philosopher(void	*arg)
 	t_phi	*philo;
 
 	philo = (t_phi*)arg;
-	while (1)
+	while (!philo->end)
 	{
-//		while (philo->f || philo->l_philo->f)
 			take_forks(philo);
-//		if (philo->f == 0 && philo->l_philo->f == 0)
-//		{
 			ft_eat(philo);
 			ft_sleep(philo);
 			ft_think(philo);
-//		}
 	}
 	return (NULL);
 }
@@ -82,7 +78,7 @@ int	ft_everybody_eats(t_phi *philos)
 	int	i;
 
 	i = 0;
-	while (i < philos[i].logic->number_phi)
+	while (i < philos[0].logic->number_phi)
 	{
 		if (philos[i].n_eats >= philos[i].logic->number_eat)
 			i++;
@@ -92,6 +88,18 @@ int	ft_everybody_eats(t_phi *philos)
 			break;
 	}
 	return (1);
+}
+
+void	set_end(t_phi *philos)
+{
+	int	i;
+
+	i = 0;
+	while (i < philos[0].logic->number_phi)
+	{
+		philos[i].end = 1;
+		i++;
+	}
 }
 
 void	*ft_seeker(void *arg)
@@ -112,16 +120,21 @@ void	*ft_seeker(void *arg)
 	{
 		if (get_time() - philos[i].last_eat > t_die)
 		{
+			i = 0;
 			pthread_mutex_lock(philos[i].print);
 			printf("%ld %i %s\n", get_time(), philos[i].id + 1, "died");
-			exit(0); //  função de acabar o jogo
+			set_end(philos);
+			break;
+//			exit(0); //  função de acabar o jogo
 		}
 		if (philos[i].logic->number_eat && ft_everybody_eats(philos))
 		{
+			i = 0;
 			pthread_mutex_lock(philos[i].print);
-			exit(0); //  função de acabar o jogo
+			set_end(philos);
+			break;
+			//exit(0); //  função de acabar o jogo
 		}
-//		printf("philo %i, time: %ld\n", i, get_time());
 		i++;
 		if (i == n_phi)
 			i = 0;
@@ -137,7 +150,6 @@ int	main(int argc, char *argv[])
 	t_logic			logic;
 	pthread_t		seeker;
 
-
 	if (ft_check_imputs(argv) != 0)
 		return (ft_error("imput error"));
 	memset(&logic, 0x0, sizeof(t_logic));
@@ -152,8 +164,10 @@ int	main(int argc, char *argv[])
 	if (ft_philo_create(&table, &logic, &philos) != 0)
 		return (ft_error("thread error"));
 	pthread_create(&seeker, NULL, ft_seeker, (void *)philos);
+	pthread_join(seeker, NULL);
 	if (ft_wait_philo(&table, &logic) != 0)
 		return (ft_error("join error"));
+	printf("philos stoped\n");
 	if (ft_destroy_forks(&table, &logic) != 0)
 		return (ft_error("forks_d error"));
 	ft_cleaning(&table, &philos);
