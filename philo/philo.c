@@ -77,7 +77,22 @@ void	*ft_philosopher(void	*arg)
 }
 
 
-int	ft_everybody_eats();
+int	ft_everybody_eats(t_phi *philos)
+{
+	int	i;
+
+	i = 0;
+	while (i < philos[i].logic->number_phi)
+	{
+		if (philos[i].n_eats >= philos[i].logic->number_eat)
+			i++;
+		else
+			return (0);
+		if (i == philos[0].logic->number_phi)
+			break;
+	}
+	return (1);
+}
 
 void	*ft_seeker(void *arg)
 {
@@ -91,7 +106,6 @@ void	*ft_seeker(void *arg)
 	philos = (t_phi *)arg;
 	n_phi = philos[0].logic->number_phi;
 	t_die = philos[0].logic->t_die / 1000;
-	n_eats = philos[0].logic->number_eat;
 	(void)n_eats;
 	i = 0;
 	while (i < n_phi)
@@ -102,11 +116,11 @@ void	*ft_seeker(void *arg)
 			printf("%ld %i %s\n", get_time(), philos[i].id + 1, "died");
 			exit(0); //  função de acabar o jogo
 		}
-//		else if (philos[i].n_eats == n_eats && n_eats > 0 )
-//		{
-//			pthread_mutex_lock(philos[i].print);
-//			exit(0); //  função de acabar o jogo
-//		}
+		if (philos[i].logic->number_eat && ft_everybody_eats(philos))
+		{
+			pthread_mutex_lock(philos[i].print);
+			exit(0); //  função de acabar o jogo
+		}
 //		printf("philo %i, time: %ld\n", i, get_time());
 		i++;
 		if (i == n_phi)
