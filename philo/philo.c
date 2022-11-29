@@ -35,6 +35,7 @@ void	take_forks(t_phi *philo)
 void	ft_eat(t_phi *philo)
 {
 	mutex_print(philo, "is eating");
+	philo->last_eat = get_time();
 	usleep(philo->logic->t_eat);
 	philo->f = 1;
 	philo->l_philo->f = 1;
@@ -74,11 +75,42 @@ void	*ft_philosopher(void	*arg)
 	return (NULL);
 }
 
+
+void	*ft_seeker(void *arg)
+{
+	t_phi	*philos;
+	int		n_phi;
+	int		i;
+	long	t_die;
+
+	philos = (t_phi *)arg;
+	n_phi = philos[0].logic->number_phi;
+	t_die = philos[0].logic->t_die / 1000;
+	i = 0;
+	while (i < n_phi)
+	{
+		if (get_time() - philos[i].last_eat > t_die)
+		{
+			pthread_mutex_lock(philos[i].print);
+			printf("%ld %i %s\n", get_time(), philos[i].id + 1, "died");
+			exit(0); //  função de acabar o jogo
+		}
+
+		i++;
+		if (i == n_phi)
+			i = 0;
+	}
+	return (NULL);
+}
+
+
 int	main(int argc, char *argv[])
 {
 	t_table			table;
 	t_phi			*philos;
 	t_logic			logic;
+	pthread_t		seeker;
+
 
 	if (ft_check_imputs(argv) != 0)
 		return (ft_error("imput error"));
@@ -93,6 +125,7 @@ int	main(int argc, char *argv[])
 		return (ft_error("forks error"));
 	if (ft_philo_create(&table, &logic, &philos) != 0)
 		return (ft_error("thread error"));
+	pthread_create(&seeker, NULL, ft_seeker, (void *)philos);
 	if (ft_wait_philo(&table, &logic) != 0)
 		return (ft_error("join error"));
 	if (ft_destroy_forks(&table, &logic) != 0)
