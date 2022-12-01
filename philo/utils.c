@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:11:55 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/28 16:02:17 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/30 11:25:33 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 		phis[i].n_eats = 0;
 		phis[i].end = 0;
 		phis[i].last_eat = get_time();
+		phis[i].start_time = phis[i].last_eat;
 		(*philos)[i].print = &table->print;
 		phis[i].print_var = &table->print_var;
 		phis[i].logic = logic;

@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/28 16:27:18 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/11/30 11:35:57 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,13 @@
 /*
 void s_sleep(t_phi *philo, unsigned long time)
 {
-	
-}
-*/
+	long	t;
+
+	t = 0;
+	while
+		i++;
+}*/
+
 
 void	take_forks(t_phi *philo)
 {
@@ -25,8 +29,8 @@ void	take_forks(t_phi *philo)
 	{
 		pthread_mutex_lock(philo->r_fork);
 		pthread_mutex_lock(philo->l_fork);
-		philo->f = 0;
-		philo->l_philo->f = 0;
+//		philo->f = 0;
+//		philo->l_philo->f = 0;
 		mutex_print(philo, "has taken a fork");
 		mutex_print(philo, "has taken a fork");
 	}
@@ -34,10 +38,10 @@ void	take_forks(t_phi *philo)
 
 void	ft_eat(t_phi *philo)
 {
-	mutex_print(philo, "is eating");
-	philo->f = 1;
-	philo->l_philo->f = 1;
 	philo->last_eat = get_time();
+	mutex_print(philo, "is eating");
+//	philo->f = 1;
+//	philo->l_philo->f = 1;
 	philo->n_eats++;
 	usleep(philo->logic->t_eat);
 	pthread_mutex_unlock(philo->r_fork);
@@ -62,6 +66,7 @@ void	*ft_philosopher(void	*arg)
 	t_phi	*philo;
 
 	philo = (t_phi*)arg;
+			ft_think(philo);
 	while (!philo->end)
 	{
 			take_forks(philo);
@@ -109,6 +114,7 @@ void	*ft_seeker(void *arg)
 	int		i;
 	int		n_eats;
 	long	t_die;
+	long	time;
 
 
 	philos = (t_phi *)arg;
@@ -118,22 +124,27 @@ void	*ft_seeker(void *arg)
 	i = 0;
 	while (i < n_phi)
 	{
-		if (get_time() - philos[i].last_eat > t_die)
+		//usleep(2000);
+		time = get_time();
+		if (time - philos[i].last_eat >= t_die && philos[i].start_time != philos[i].last_eat)
 		{
+			printf("time %ld\n", time);
+			printf("phil %ld\n", philos[i].last_eat);
+			printf("%ld\n", time - philos[i].last_eat);
 			i = 0;
-			pthread_mutex_lock(philos[i].print);
-			printf("%ld %i %s\n", get_time(), philos[i].id + 1, "died");
+			//pthread_mutex_lock(philos[i].print);
+			printf("%ld %i %s\n", time, philos[i].id , "died");
 			set_end(philos);
-			break;
-//			exit(0); //  função de acabar o jogo
+			//break;
+			exit(0); //  função de acabar o jogo
 		}
 		if (philos[i].logic->number_eat && ft_everybody_eats(philos))
 		{
 			i = 0;
 			pthread_mutex_lock(philos[i].print);
 			set_end(philos);
-			break;
-			//exit(0); //  função de acabar o jogo
+			//break;
+			exit(0); //  função de acabar o jogo
 		}
 		i++;
 		if (i == n_phi)
@@ -161,9 +172,9 @@ int	main(int argc, char *argv[])
 		return (ft_error("malloc error"));
 	if (ft_init_forks(&table, &logic) != 0)
 		return (ft_error("forks error"));
+	pthread_create(&seeker, NULL, ft_seeker, (void *)philos);
 	if (ft_philo_create(&table, &logic, &philos) != 0)
 		return (ft_error("thread error"));
-	pthread_create(&seeker, NULL, ft_seeker, (void *)philos);
 	pthread_join(seeker, NULL);
 	if (ft_wait_philo(&table, &logic) != 0)
 		return (ft_error("join error"));
