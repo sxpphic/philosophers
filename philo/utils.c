@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:11:55 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/30 11:25:33 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/01 13:40:57 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,8 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 
 	phis = (*philos);
 	table->print_var = 1;
+	table->end = 0;
+
 	i = -1;
 	while (++i < logic->number_phi)
 	{
@@ -148,7 +150,7 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 		phis[i].r_fork = &table->forks[i];
 		phis[i].f = 1;
 		phis[i].n_eats = 0;
-		phis[i].end = 0;
+		phis[i].end = &table->end;
 		phis[i].last_eat = get_time();
 		phis[i].start_time = phis[i].last_eat;
 		(*philos)[i].print = &table->print;
@@ -200,7 +202,10 @@ int	ft_destroy_forks(t_table *table, t_logic *logic)
 
 void	mutex_print(t_phi *philo, char *s)
 {
-//	pthread_mutex_lock(philo->print);
-	printf("%ld %i %s\n", get_time(), philo->id + 1, s);
-//	pthread_mutex_unlock(philo->print);
+	if (!*philo->end)
+	{
+//		pthread_mutex_lock(philo->print);
+		printf("%ld %i %s\n", get_time(), philo->id + 1, s);
+//		pthread_mutex_unlock(philo->print);
+	}
 }

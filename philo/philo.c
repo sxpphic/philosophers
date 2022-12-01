@@ -6,54 +6,59 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/11/30 11:35:57 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/01 16:12:22 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/*
-void s_sleep(t_phi *philo, unsigned long time)
+
+int	s_sleep(t_phi *philo, unsigned long time)
 {
 	long	t;
 
-	t = 0;
-	while
-		i++;
-}*/
+	(void)philo;
+	t = get_time() + time / 1000;
+	while (get_time() < t)
+	{
+		if (*philo->end)
+			return (1);
+		usleep(1000);
+	}
+	return (0);
+}
 
 
 void	take_forks(t_phi *philo)
 {
-//	if (philo->f && philo->l_philo->f)
-	{
 		pthread_mutex_lock(philo->r_fork);
 		pthread_mutex_lock(philo->l_fork);
-//		philo->f = 0;
-//		philo->l_philo->f = 0;
 		mutex_print(philo, "has taken a fork");
 		mutex_print(philo, "has taken a fork");
-	}
 }
 
-void	ft_eat(t_phi *philo)
+int	ft_eat(t_phi *philo)
 {
 	philo->last_eat = get_time();
 	mutex_print(philo, "is eating");
-//	philo->f = 1;
-//	philo->l_philo->f = 1;
 	philo->n_eats++;
-	usleep(philo->logic->t_eat);
+	if (s_sleep(philo, philo->logic->t_eat))
+	{
+		pthread_mutex_unlock(philo->r_fork);
+		pthread_mutex_unlock(philo->l_fork);
+		return (1);
+	}
 	pthread_mutex_unlock(philo->r_fork);
 	pthread_mutex_unlock(philo->l_fork);
-	//sleep
+	return (0);
 }
 
-void	ft_sleep(t_phi *philo)
+int	ft_sleep(t_phi *philo)
 {
 	mutex_print(philo, "is sleeping");
-	usleep(philo->logic->t_slp);
-	//sleep
+	if (s_sleep(philo, philo->logic->t_slp))
+		return (1);
+	return (0);
 }
 
 void	ft_think(t_phi *philo)
@@ -66,13 +71,18 @@ void	*ft_philosopher(void	*arg)
 	t_phi	*philo;
 
 	philo = (t_phi*)arg;
-			ft_think(philo);
-	while (!philo->end)
+	if (philo->logic->number_phi == 1)
+		return (NULL);
+	while (!*philo->end)
 	{
-			take_forks(philo);
-			ft_eat(philo);
-			ft_sleep(philo);
-			ft_think(philo);
+			if (!*philo->end)
+				take_forks(philo);
+			if (ft_eat(philo))
+				break;
+			if (ft_sleep(philo))
+				break;
+			if (!*philo->end)
+				ft_think(philo);
 	}
 	return (NULL);
 }
@@ -95,18 +105,6 @@ int	ft_everybody_eats(t_phi *philos)
 	return (1);
 }
 
-void	set_end(t_phi *philos)
-{
-	int	i;
-
-	i = 0;
-	while (i < philos[0].logic->number_phi)
-	{
-		philos[i].end = 1;
-		i++;
-	}
-}
-
 void	*ft_seeker(void *arg)
 {
 	t_phi	*philos;
@@ -124,27 +122,21 @@ void	*ft_seeker(void *arg)
 	i = 0;
 	while (i < n_phi)
 	{
-		//usleep(2000);
 		time = get_time();
 		if (time - philos[i].last_eat >= t_die && philos[i].start_time != philos[i].last_eat)
 		{
 			printf("time %ld\n", time);
 			printf("phil %ld\n", philos[i].last_eat);
 			printf("%ld\n", time - philos[i].last_eat);
-			i = 0;
+			*philos[i].end = 1;
 			//pthread_mutex_lock(philos[i].print);
-			printf("%ld %i %s\n", time, philos[i].id , "died");
-			set_end(philos);
-			//break;
-			exit(0); //  função de acabar o jogo
+			printf("%ld %i %s\n", time, philos[i].id + 1, "died");
+			break;
 		}
 		if (philos[i].logic->number_eat && ft_everybody_eats(philos))
 		{
-			i = 0;
 			pthread_mutex_lock(philos[i].print);
-			set_end(philos);
-			//break;
-			exit(0); //  função de acabar o jogo
+			break;
 		}
 		i++;
 		if (i == n_phi)
@@ -176,6 +168,7 @@ int	main(int argc, char *argv[])
 	if (ft_philo_create(&table, &logic, &philos) != 0)
 		return (ft_error("thread error"));
 	pthread_join(seeker, NULL);
+	printf("seeker stoped\n");
 	if (ft_wait_philo(&table, &logic) != 0)
 		return (ft_error("join error"));
 	printf("philos stoped\n");
