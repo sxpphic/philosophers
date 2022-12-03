@@ -71,7 +71,6 @@ void	*ft_philosopher(void	*arg)
 	philo = (t_phi*)arg;
 	if (philo->logic->number_phi == 1)
 	{
-		printf("adfdfa\n");
 		while (!*philo->end)
 			s_sleep(philo, 100);
 	}
@@ -84,17 +83,11 @@ void	*ft_philosopher(void	*arg)
 		ft_leave_forks(philo);
 		if (!*philo->end)
 			ft_sleep(philo);
-//		{
-//			if (ft_sleep(philo))
-//				break;
-//		}
 		if (!*philo->end)
 			ft_think(philo);
 	}
-
 	return (NULL);
 }
-
 
 int	ft_everybody_eats(t_phi *philos)
 {
@@ -116,41 +109,40 @@ int	ft_everybody_eats(t_phi *philos)
 void	*ft_seeker(void *arg)
 {
 	t_phi	*philos;
-	int		n_phi;
 	int		i;
-	int		n_eats;
-	long	t_die;
 	long	time;
 
-
 	philos = (t_phi *)arg;
-	n_phi = philos[0].logic->number_phi;
-	t_die = philos[0].logic->t_die / 1;
-	(void)n_eats;
 	i = 0;
-	while (i < n_phi)
+	while (i < philos[0].logic->number_phi)
 	{
 		time = get_time();
-		if ((time - philos[i].last_eat > t_die) || (time - philos[i].last_eat > t_die && (philos[i].logic->number_phi == 1)))
+		if (time - philos[i].last_eat > philos[0].logic->t_die)
 		{
-			printf("time %ld\n", time);
-			printf("phil %ld\n", philos[i].last_eat);
-			printf("%ld\n", time - philos[i].last_eat);
 			*philos[i].end = 1;
-			printf("%ld %i %s\n", time, philos[i].id + 1, "died");
+			printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
 			break;
 		}
 		if (philos[i].logic->number_eat && ft_everybody_eats(philos))
 		{
 			*philos[i].end = 1;
-			//pthread_mutex_lock(philos[i].print);
 			break;
 		}
 		i++;
-		if (i == n_phi)
+		if (i == philos[0].logic->number_phi)
 			i = 0;
 	}
 	return (NULL);
+}
+
+int	ft_seeker_create(t_phi	*philos)
+{
+	pthread_t		seeker;
+
+	if (pthread_create(&seeker, NULL, ft_seeker, (void *)philos))
+		return (-1);
+	pthread_join(seeker, NULL);
+	return (0);
 }
 
 int	main(int argc, char *argv[])
@@ -158,7 +150,6 @@ int	main(int argc, char *argv[])
 	t_table			table;
 	t_phi			*philos;
 	t_logic			logic;
-	pthread_t		seeker;
 
 	if (ft_check_imputs(argv) != 0)
 		return (ft_error("imput error"));
@@ -172,13 +163,11 @@ int	main(int argc, char *argv[])
 	if (ft_init_forks(&table, &logic) != 0)
 		return (ft_error("forks error"));
 	if (ft_philo_create(&table, &logic, &philos) != 0)
-		return (ft_error("thread error"));
-	pthread_create(&seeker, NULL, ft_seeker, (void *)philos);
-	pthread_join(seeker, NULL);
-	printf("seeker stoped\n");
+		return (ft_error("thread error (philo)"));
+	if (ft_seeker_create(philos))
+		return (ft_error("thread error (seeker)"));
 	if (ft_wait_philo(&table, &logic) != 0)
 		return (ft_error("join error"));
-	printf("philos stoped\n");
 	if (ft_destroy_forks(&table, &logic) != 0)
 		return (ft_error("forks_d error"));
 	ft_cleaning(&table, &philos);

@@ -41,7 +41,6 @@ int	ft_malloc_zero(t_table *table, t_logic *logic, t_phi **phis)
 {
 	*phis = malloc(sizeof(t_phi) * logic->number_phi);
 	table->philos = malloc(sizeof(pthread_t) * logic->number_phi);
-//	logic->is_fork_locked = malloc(sizeof(int) * logic->number_phi);
 	if (!table->philos)
 		return (-1);
 	table->forks = malloc(sizeof(pthread_mutex_t) * logic->number_phi);
@@ -61,7 +60,7 @@ long	get_time(void)
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000000) + (time.tv_usec / 1));
+	return ((time.tv_sec * 1000000) + (time.tv_usec));
 }
 
 int	ft_check_imputs(char **argv)
@@ -71,9 +70,10 @@ int	ft_check_imputs(char **argv)
 
 	i = 1;
 	j = 0;
+	if (argv[i][j] == '0')
+		return (-1);
 	while (argv[i])
 	{
-
 		if (argv[i][j] == '-')
 			return (-1);
 		else if (argv[i][j] == '+')
@@ -123,40 +123,12 @@ int	ft_init_forks(t_table *table, t_logic *logic)
 	return (0);
 }
 
-int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
+int	ft_philo_init(t_table *table,t_logic *logic, t_phi **philos)
 {
 	int	i;
 	t_phi	*phis;
 
 	phis = (*philos);
-	table->print_var = 1;
-	table->end = 0;
-
-	i = -1;
-	while (++i < logic->number_phi)
-	{
-		phis[i].id = i;
-		if (i > 0)
-		{
-			phis[i].l_fork = &table->forks[i - 1];
-			phis[i].l_philo = &phis[i - 1];
-		}
-		else
-		{
-			phis[i].l_fork = &table->forks[logic->number_phi - 1];
-			phis[i].l_philo = &phis[logic->number_phi - 1];
-		}
-		phis[i].philo = &table->philos[i];
-		phis[i].r_fork = &table->forks[i];
-		phis[i].f = 1;
-		phis[i].n_eats = 0;
-		phis[i].end = &table->end;
-		phis[i].last_eat = get_time();
-		phis[i].start_time = phis[i].last_eat;
-		(*philos)[i].print = &table->print;
-		phis[i].print_var = &table->print_var;
-		phis[i].logic = logic;
-	}
 	i = 0;
 	while (i < logic->number_phi)
 	{
@@ -171,6 +143,34 @@ int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
 			return (-2);
 		i += 2;
 	}
+	return (0);
+}
+
+int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
+{
+	int	i;
+	t_phi	*phis;
+
+	phis = (*philos);
+	table->end = 0;
+	i = -1;
+	while (++i < logic->number_phi)
+	{
+		phis[i].id = i;
+		if (i > 0)
+			phis[i].l_fork = &table->forks[i - 1];
+		else
+			phis[i].l_fork = &table->forks[logic->number_phi - 1];
+		phis[i].philo = &table->philos[i];
+		phis[i].r_fork = &table->forks[i];
+		phis[i].n_eats = 0;
+		phis[i].end = &table->end;
+		phis[i].last_eat = get_time();
+		(*philos)[i].print = &table->print;
+		phis[i].logic = logic;
+	}
+	if (ft_philo_init(table, logic, philos))
+		return (-2);
 	return (0);
 }
 
