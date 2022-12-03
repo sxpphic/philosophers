@@ -51,8 +51,8 @@ int	ft_malloc_zero(t_table *table, t_logic *logic, t_phi **phis)
 
 int	ft_error(char *s)
 {
-		printf("%s\n", s);
-		return (0);
+	printf("%s\n", s);
+	return (0);
 }
 
 long	get_time(void)
@@ -115,7 +115,7 @@ int	ft_init_forks(t_table *table, t_logic *logic)
 	i = -1;
 	if (pthread_mutex_init(&table->print, NULL) != 0)
 		return (-1);
-	while(++i < logic->number_phi)
+	while (++i < logic->number_phi)
 	{
 		if (pthread_mutex_init(&table->forks[i], NULL) != 0)
 			return (-1);
@@ -123,32 +123,32 @@ int	ft_init_forks(t_table *table, t_logic *logic)
 	return (0);
 }
 
-int	ft_philo_init(t_table *table,t_logic *logic, t_phi **philos)
+int	ft_philo_init(t_table *table, t_logic *logic, t_phi **philos)
 {
-	int	i;
+	int		i;
 	t_phi	*phis;
 
 	phis = (*philos);
 	i = 0;
 	while (i < logic->number_phi)
 	{
-		if (pthread_create(&table->philos[i], NULL, ft_philosopher, (void *)&phis[i]) != 0)
+		if (pthread_create(&table->philos[i], NULL, ft_philosopher, &phis[i]))
 			return (-2);
 		i += 2;
 	}
 	i = 1;
 	while (i < logic->number_phi)
 	{
-		if (pthread_create(&table->philos[i], NULL, ft_philosopher, (void *)&phis[i]) != 0)
+		if (pthread_create(&table->philos[i], NULL, ft_philosopher, &phis[i]))
 			return (-2);
 		i += 2;
 	}
 	return (0);
 }
 
-int	ft_philo_create(t_table *table,t_logic *logic, t_phi **philos)
+int	ft_philo_create(t_table *table, t_logic *logic, t_phi **philos)
 {
-	int	i;
+	int		i;
 	t_phi	*phis;
 
 	phis = (*philos);
@@ -192,7 +192,7 @@ int	ft_destroy_forks(t_table *table, t_logic *logic)
 	int	i;
 
 	i = -1;
-	while(++i < logic->number_phi)
+	while (++i < logic->number_phi)
 	{
 		if (pthread_mutex_destroy(&table->forks[i]) != 0)
 			return (-1);

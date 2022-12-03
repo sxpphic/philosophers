@@ -12,7 +12,6 @@
 
 #include "philo.h"
 
-
 int	s_sleep(t_phi *philo, unsigned long time)
 {
 	long	t;
@@ -68,7 +67,7 @@ void	*ft_philosopher(void	*arg)
 {
 	t_phi	*philo;
 
-	philo = (t_phi*)arg;
+	philo = (t_phi *)arg;
 	if (philo->logic->number_phi == 1)
 	{
 		while (!*philo->end)
@@ -101,7 +100,7 @@ int	ft_everybody_eats(t_phi *philos)
 		else
 			return (0);
 		if (i == philos[0].logic->number_phi)
-			break;
+			break ;
 	}
 	return (1);
 }
@@ -121,12 +120,12 @@ void	*ft_seeker(void *arg)
 		{
 			*philos[i].end = 1;
 			printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
-			break;
+			break ;
 		}
 		if (philos[i].logic->number_eat && ft_everybody_eats(philos))
 		{
 			*philos[i].end = 1;
-			break;
+			break ;
 		}
 		i++;
 		if (i == philos[0].logic->number_phi)
