@@ -192,6 +192,8 @@ int	ft_destroy_forks(t_table *table, t_logic *logic)
 	int	i;
 
 	i = -1;
+	if (pthread_mutex_destroy(&table->print) != 0)
+		return (-1);
 	while (++i < logic->number_phi)
 	{
 		if (pthread_mutex_destroy(&table->forks[i]) != 0)
