@@ -17,7 +17,7 @@ int	s_sleep(t_phi *philo, unsigned long time)
 {
 	long	t;
 
-	t = get_time() + time / 1000;
+	t = get_time() + time / 1;
 	while (get_time() < t)
 	{
 		if (*philo->end)
@@ -43,12 +43,12 @@ int	ft_eat(t_phi *philo)
 	philo->n_eats++;
 	if (s_sleep(philo, philo->logic->t_eat))
 	{
-		pthread_mutex_unlock(philo->r_fork);
-		pthread_mutex_unlock(philo->l_fork);
+//		pthread_mutex_unlock(philo->r_fork);
+//		pthread_mutex_unlock(philo->l_fork);
 		return (1);
 	}
-	pthread_mutex_unlock(philo->r_fork);
-	pthread_mutex_unlock(philo->l_fork);
+//	pthread_mutex_unlock(philo->r_fork);
+//	pthread_mutex_unlock(philo->l_fork);
 	return (0);
 }
 
@@ -65,6 +65,12 @@ void	ft_think(t_phi *philo)
 	mutex_print(philo, "is thinking");
 }
 
+void	ft_leave_forks(t_phi *philo)
+{
+	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->l_fork);
+}
+
 void	*ft_philosopher(void	*arg)
 {
 	t_phi	*philo;
@@ -78,14 +84,15 @@ void	*ft_philosopher(void	*arg)
 	}
 	while (!*philo->end)
 	{
-		printf("awdaf\n");
 		if (!*philo->end)
 			take_forks(philo);
 //		if (!*philo->end)
 //		{
-			if (ft_eat(philo))
-				break;
+			//if (ft_eat(philo))
+		ft_eat(philo);
+			//	break;
 //		}
+		ft_leave_forks(philo);
 		if (!*philo->end)
 		{
 			if (ft_sleep(philo))
@@ -128,7 +135,7 @@ void	*ft_seeker(void *arg)
 
 	philos = (t_phi *)arg;
 	n_phi = philos[0].logic->number_phi;
-	t_die = philos[0].logic->t_die / 1000;
+	t_die = philos[0].logic->t_die / 1;
 	(void)n_eats;
 	i = 0;
 	while (i < n_phi)
@@ -136,7 +143,6 @@ void	*ft_seeker(void *arg)
 		time = get_time();
 		if ((time - philos[i].last_eat > t_die) || (time - philos[i].last_eat > t_die && (philos[i].logic->number_phi == 1)))
 		{
-			//pthread_mutex_lock(philos[i].print);
 			printf("time %ld\n", time);
 			printf("phil %ld\n", philos[i].last_eat);
 			printf("%ld\n", time - philos[i].last_eat);

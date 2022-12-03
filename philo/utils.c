@@ -61,7 +61,7 @@ long	get_time(void)
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	return ((time.tv_sec * 1000000) + (time.tv_usec / 1));
 }
 
 int	ft_check_imputs(char **argv)
@@ -205,7 +205,7 @@ void	mutex_print(t_phi *philo, char *s)
 	if (!*philo->end)
 	{
 		pthread_mutex_lock(philo->print);
-		printf("%ld %i %s\n", get_time() / 1, philo->id + 1, s);
+		printf("%ld %i %s\n", get_time() / 1000, philo->id + 1, s);
 		pthread_mutex_unlock(philo->print);
 	}
 }
