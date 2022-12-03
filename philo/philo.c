@@ -27,13 +27,12 @@ int	s_sleep(t_phi *philo, unsigned long time)
 	return (0);
 }
 
-
 void	take_forks(t_phi *philo)
 {
-		pthread_mutex_lock(philo->r_fork);
-		pthread_mutex_lock(philo->l_fork);
-		mutex_print(philo, "has taken a fork");
-		mutex_print(philo, "has taken a fork");
+	pthread_mutex_lock(philo->r_fork);
+	pthread_mutex_lock(philo->l_fork);
+	mutex_print(philo, "has taken a fork");
+	mutex_print(philo, "has taken a fork");
 }
 
 int	ft_eat(t_phi *philo)
@@ -42,13 +41,7 @@ int	ft_eat(t_phi *philo)
 	mutex_print(philo, "is eating");
 	philo->n_eats++;
 	if (s_sleep(philo, philo->logic->t_eat))
-	{
-//		pthread_mutex_unlock(philo->r_fork);
-//		pthread_mutex_unlock(philo->l_fork);
 		return (1);
-	}
-//	pthread_mutex_unlock(philo->r_fork);
-//	pthread_mutex_unlock(philo->l_fork);
 	return (0);
 }
 
@@ -86,18 +79,15 @@ void	*ft_philosopher(void	*arg)
 	{
 		if (!*philo->end)
 			take_forks(philo);
-//		if (!*philo->end)
-//		{
-			//if (ft_eat(philo))
-		ft_eat(philo);
-			//	break;
-//		}
+		if (!*philo->end)
+			ft_eat(philo);
 		ft_leave_forks(philo);
 		if (!*philo->end)
-		{
-			if (ft_sleep(philo))
-				break;
-		}
+			ft_sleep(philo);
+//		{
+//			if (ft_sleep(philo))
+//				break;
+//		}
 		if (!*philo->end)
 			ft_think(philo);
 	}
