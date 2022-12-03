@@ -204,8 +204,8 @@ void	mutex_print(t_phi *philo, char *s)
 {
 	if (!*philo->end)
 	{
-//		pthread_mutex_lock(philo->print);
-		printf("%ld %i %s\n", get_time(), philo->id + 1, s);
-//		pthread_mutex_unlock(philo->print);
+		pthread_mutex_lock(philo->print);
+		printf("%ld %i %s\n", get_time() / 1, philo->id + 1, s);
+		pthread_mutex_unlock(philo->print);
 	}
 }

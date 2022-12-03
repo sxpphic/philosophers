@@ -78,15 +78,23 @@ void	*ft_philosopher(void	*arg)
 	}
 	while (!*philo->end)
 	{
+		printf("awdaf\n");
 		if (!*philo->end)
 			take_forks(philo);
-		if (ft_eat(philo))
-			break;
-		if (ft_sleep(philo))
-			break;
+//		if (!*philo->end)
+//		{
+			if (ft_eat(philo))
+				break;
+//		}
+		if (!*philo->end)
+		{
+			if (ft_sleep(philo))
+				break;
+		}
 		if (!*philo->end)
 			ft_think(philo);
 	}
+
 	return (NULL);
 }
 
@@ -126,13 +134,13 @@ void	*ft_seeker(void *arg)
 	while (i < n_phi)
 	{
 		time = get_time();
-		if ((time - philos[i].last_eat > t_die && (philos[i].start_time != philos[i].last_eat)) || (time - philos[i].last_eat > t_die && (philos[i].logic->number_phi == 1)))
+		if ((time - philos[i].last_eat > t_die) || (time - philos[i].last_eat > t_die && (philos[i].logic->number_phi == 1)))
 		{
+			//pthread_mutex_lock(philos[i].print);
 			printf("time %ld\n", time);
 			printf("phil %ld\n", philos[i].last_eat);
 			printf("%ld\n", time - philos[i].last_eat);
 			*philos[i].end = 1;
-			//pthread_mutex_lock(philos[i].print);
 			printf("%ld %i %s\n", time, philos[i].id + 1, "died");
 			break;
 		}
@@ -148,7 +156,6 @@ void	*ft_seeker(void *arg)
 	}
 	return (NULL);
 }
-
 
 int	main(int argc, char *argv[])
 {
@@ -168,9 +175,9 @@ int	main(int argc, char *argv[])
 		return (ft_error("malloc error"));
 	if (ft_init_forks(&table, &logic) != 0)
 		return (ft_error("forks error"));
-	pthread_create(&seeker, NULL, ft_seeker, (void *)philos);
 	if (ft_philo_create(&table, &logic, &philos) != 0)
 		return (ft_error("thread error"));
+	pthread_create(&seeker, NULL, ft_seeker, (void *)philos);
 	pthread_join(seeker, NULL);
 	printf("seeker stoped\n");
 	if (ft_wait_philo(&table, &logic) != 0)
@@ -181,5 +188,3 @@ int	main(int argc, char *argv[])
 	ft_cleaning(&table, &philos);
 	return (0);
 }
-
-//makefile relink
