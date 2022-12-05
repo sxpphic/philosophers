@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/01 16:12:22 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/05 10:23:08 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,12 +119,15 @@ void	*ft_seeker(void *arg)
 		if (time - philos[i].last_eat > philos[0].logic->t_die)
 		{
 			*philos[i].end = 1;
+			usleep(100);
 			printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
 			break ;
 		}
 		if (philos[i].logic->number_eat && ft_everybody_eats(philos))
 		{
 			*philos[i].end = 1;
+			usleep(100);
+			printf("each philosophers has eaten %i times\n", philos[0].logic->number_eat);
 			break ;
 		}
 		i++;
@@ -150,11 +153,13 @@ int	main(int argc, char *argv[])
 	t_phi			*philos;
 	t_logic			logic;
 
-	if (ft_check_imputs(argv) != 0)
-		return (ft_error("imput error"));
-	memset(&logic, 0x0, sizeof(t_logic));
 	if (argc == 5 || argc == 6)
+	{
+		if (ft_check_imputs(argv) != 0)
+			return (ft_error("imput error"));
+		memset(&logic, 0x0, sizeof(t_logic));
 		set_imput(argc, argv, &logic);
+	}
 	else
 		return (ft_error("wrong imput"));
 	if (ft_malloc_zero(&table, &logic, &philos) != 0)
