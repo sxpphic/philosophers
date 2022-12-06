@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:11:55 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/01 13:40:57 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:04:30 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ long	get_time(void)
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000000) + (time.tv_usec));
+	return ((time.tv_sec * 1e6) + (time.tv_usec));
 }
 
 int	ft_check_imputs(char **argv)
