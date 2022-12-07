@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/05 10:23:08 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/07 19:02:49 by soph             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,71 +99,7 @@ void	*ft_philosopher(void	*arg)
 	return (NULL);
 }
 
-int	ft_everybody_eats(t_phi *philos)
-{
-	int	i;
 
-	i = 0;
-	while (i < philos[0].logic->number_phi)
-	{
-		if (philos[i].n_eats >= philos[i].logic->number_eat)
-			i++;
-		else
-			return (0);
-		if (i == philos[0].logic->number_phi)
-			break ;
-	}
-	return (1);
-}
-
-int	check_end(t_phi *philos, int i)
-{
-	long	time;
-
-	time = get_time();
-	if (time - philos[i].last_eat > philos[0].logic->t_die)
-	{
-		*philos[i].end = 1;
-		usleep(100);
-		printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
-		return (1);
-	}
-	if (philos[i].logic->number_eat && ft_everybody_eats(philos))
-	{
-		*philos[i].end = 1;
-		usleep(100);
-		return (1);
-	}
-	return (0);
-}
-
-void	*ft_seeker(void *arg)
-{
-	t_phi	*philos;
-	int		i;
-
-	philos = (t_phi *)arg;
-	i = 0;
-	while (i < philos[0].logic->number_phi)
-	{
-		if (check_end(philos, i))
-			break ;
-		i++;
-		if (i == philos[0].logic->number_phi)
-			i = 0;
-	}
-	return (NULL);
-}
-
-int	ft_seeker_create(t_phi	*philos)
-{
-	pthread_t		seeker;
-
-	if (pthread_create(&seeker, NULL, ft_seeker, (void *)philos))
-		return (-1);
-	pthread_join(seeker, NULL);
-	return (0);
-}
 
 int	check_inputs(int argc, char *argv[], t_logic *logic)
 {
