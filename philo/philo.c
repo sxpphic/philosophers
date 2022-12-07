@@ -41,7 +41,6 @@ void	take_forks(t_phi *philo)
 			break ;
 		}
 	}
-
 }
 
 int	ft_eat(t_phi *philo)
@@ -117,31 +116,38 @@ int	ft_everybody_eats(t_phi *philos)
 	return (1);
 }
 
+int	check_end(t_phi *philos, int i)
+{
+	long	time;
+
+	time = get_time();
+	if (time - philos[i].last_eat > philos[0].logic->t_die)
+	{
+		*philos[i].end = 1;
+		usleep(100);
+		printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
+		return (1);
+	}
+	if (philos[i].logic->number_eat && ft_everybody_eats(philos))
+	{
+		*philos[i].end = 1;
+		usleep(100);
+		return (1);
+	}
+	return (0);
+}
+
 void	*ft_seeker(void *arg)
 {
 	t_phi	*philos;
 	int		i;
-	long	time;
 
 	philos = (t_phi *)arg;
 	i = 0;
 	while (i < philos[0].logic->number_phi)
 	{
-		time = get_time();
-		if (time - philos[i].last_eat > philos[0].logic->t_die)
-		{
-			*philos[i].end = 1;
-			usleep(100);
-			printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
+		if (check_end(philos, i))
 			break ;
-		}
-		if (philos[i].logic->number_eat && ft_everybody_eats(philos))
-		{
-			*philos[i].end = 1;
-			usleep(100);
-			printf("each philosophers has eaten %i times\n", philos[0].logic->number_eat);
-			break ;
-		}
 		i++;
 		if (i == philos[0].logic->number_phi)
 			i = 0;
@@ -159,21 +165,28 @@ int	ft_seeker_create(t_phi	*philos)
 	return (0);
 }
 
+int	check_inputs(int argc, char *argv[], t_logic *logic)
+{
+	if (argc == 5 || argc == 6)
+	{
+		if (ft_check_imputs(argv) != 0)
+			return (!ft_error("imput error"));
+		memset(logic, 0x0, sizeof(t_logic));
+		set_imput(argc, argv, logic);
+	}
+	else
+		return (!ft_error("wrong imput"));
+	return (0);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_table			table;
 	t_phi			*philos;
 	t_logic			logic;
 
-	if (argc == 5 || argc == 6)
-	{
-		if (ft_check_imputs(argv) != 0)
-			return (ft_error("imput error"));
-		memset(&logic, 0x0, sizeof(t_logic));
-		set_imput(argc, argv, &logic);
-	}
-	else
-		return (ft_error("wrong imput"));
+	if (check_inputs(argc, argv, &logic))
+		return (0);
 	if (ft_malloc_zero(&table, &logic, &philos) != 0)
 		return (ft_error("malloc error"));
 	if (ft_init_forks(&table, &logic) != 0)

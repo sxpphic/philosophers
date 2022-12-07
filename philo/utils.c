@@ -146,31 +146,35 @@ int	ft_philo_init(t_table *table, t_logic *logic, t_phi **philos)
 	return (0);
 }
 
-int	ft_philo_create(t_table *table, t_logic *logic, t_phi **philos)
+void	set_philo_data(t_table *table, t_logic *logic, t_phi **philos, int i)
 {
-	int		i;
 	t_phi	*phis;
 
 	phis = (*philos);
+	phis[i].id = i;
+	if (i > 0)
+		phis[i].l_fork.fork = &table->forks[i - 1];
+	else
+		phis[i].l_fork.fork = &table->forks[logic->number_phi - 1];
+	phis[i].philo = &table->philos[i];
+	phis[i].r_fork.fork = &table->forks[i];
+	phis[i].r_fork.state = 0;
+	phis[i].l_fork.state = 0;
+	phis[i].n_eats = 0;
+	phis[i].end = &table->end;
+	phis[i].last_eat = get_time();
+	phis[i].print = &table->print;
+	phis[i].logic = logic;
+}
+
+int	ft_philo_create(t_table *table, t_logic *logic, t_phi **philos)
+{
+	int		i;
+
 	table->end = 0;
 	i = -1;
 	while (++i < logic->number_phi)
-	{
-		phis[i].id = i;
-		if (i > 0)
-			phis[i].l_fork.fork = &table->forks[i - 1];
-		else
-			phis[i].l_fork.fork = &table->forks[logic->number_phi - 1];
-		phis[i].philo = &table->philos[i];
-		phis[i].r_fork.fork = &table->forks[i];
-		phis[i].r_fork.state = 0;
-		phis[i].l_fork.state = 0;
-		phis[i].n_eats = 0;
-		phis[i].end = &table->end;
-		phis[i].last_eat = get_time();
-		(*philos)[i].print = &table->print;
-		phis[i].logic = logic;
-	}
+		set_philo_data(table, logic, philos, i);
 	if (ft_philo_init(table, logic, philos))
 		return (-2);
 	return (0);
