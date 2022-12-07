@@ -34,10 +34,15 @@ typedef struct s_table{
 	int				end;
 }				t_table;
 
+typedef struct s_fork{
+	pthread_mutex_t	*fork;
+	int				state;
+}				t_fork;
+
 typedef struct s_phi{
-	pthread_mutex_t	*l_fork;
+	t_fork			l_fork;
 	pthread_t		*philo;
-	pthread_mutex_t	*r_fork;
+	t_fork			r_fork;
 	pthread_mutex_t	*print;
 	int				id;
 	int				n_eats;

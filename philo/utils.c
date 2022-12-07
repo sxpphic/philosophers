@@ -158,11 +158,13 @@ int	ft_philo_create(t_table *table, t_logic *logic, t_phi **philos)
 	{
 		phis[i].id = i;
 		if (i > 0)
-			phis[i].l_fork = &table->forks[i - 1];
+			phis[i].l_fork.fork = &table->forks[i - 1];
 		else
-			phis[i].l_fork = &table->forks[logic->number_phi - 1];
+			phis[i].l_fork.fork = &table->forks[logic->number_phi - 1];
 		phis[i].philo = &table->philos[i];
-		phis[i].r_fork = &table->forks[i];
+		phis[i].r_fork.fork = &table->forks[i];
+		phis[i].r_fork.state = 0;
+		phis[i].l_fork.state = 0;
 		phis[i].n_eats = 0;
 		phis[i].end = &table->end;
 		phis[i].last_eat = get_time();

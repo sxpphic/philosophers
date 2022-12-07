@@ -28,10 +28,20 @@ int	s_sleep(t_phi *philo, unsigned long time)
 
 void	take_forks(t_phi *philo)
 {
-	pthread_mutex_lock(philo->r_fork);
-	pthread_mutex_lock(philo->l_fork);
-	mutex_print(philo, "has taken a fork");
-	mutex_print(philo, "has taken a fork");
+	while (!*philo->end)
+	{
+		if (philo->r_fork.state == 0 && philo->l_fork.state == 0)
+		{
+			pthread_mutex_lock(philo->r_fork.fork);
+			pthread_mutex_lock(philo->l_fork.fork);
+			philo->r_fork.state = 1;
+			philo->l_fork.state = 1;
+			mutex_print(philo, "has taken a fork");
+			mutex_print(philo, "has taken a fork");
+			break ;
+		}
+	}
+
 }
 
 int	ft_eat(t_phi *philo)
@@ -59,8 +69,10 @@ void	ft_think(t_phi *philo)
 
 void	ft_leave_forks(t_phi *philo)
 {
-	pthread_mutex_unlock(philo->r_fork);
-	pthread_mutex_unlock(philo->l_fork);
+	philo->r_fork.state = 0;
+	philo->l_fork.state = 0;
+	pthread_mutex_unlock(philo->r_fork.fork);
+	pthread_mutex_unlock(philo->l_fork.fork);
 }
 
 void	*ft_philosopher(void	*arg)
