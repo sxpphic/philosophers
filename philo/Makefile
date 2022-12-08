@@ -1,7 +1,9 @@
 NAME = 		philo
 
 SRC =		philo.c \
-			utils.c
+			utils.c \
+			seeker.c \
+			routine_funcs.c \
 
 HEADER =	philo.h
 
