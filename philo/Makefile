@@ -11,7 +11,7 @@ HEADER =	philo.h
 
 CC =		cc
 
-CFLAGS =	-Wall -Wextra -Werror -pthread -g
+CFLAGS =	-Wall -Wextra -Werror -pthread
 
 RM =		rm -rf
 
