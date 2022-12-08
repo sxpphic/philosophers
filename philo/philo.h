@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/08 17:23:03 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:26:05 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ void	ft_cleaning(t_table *table, t_phi **phis);
 void	set_imput(int argc, char *argv[], t_logic *logic);
 int		ft_destroy_forks(t_table *table, t_logic *logic);
 void	mutex_print(t_phi *philo, char *s);
-int	s_sleep(t_phi *philo, unsigned long time);
+int		s_sleep(t_phi *philo, unsigned long time);
 void	*ft_philosopher(void	*arg);
-int	check_inputs(int argc, char *argv[], t_logic *logic);
+int		check_inputs(int argc, char *argv[], t_logic *logic);
 
 #endif

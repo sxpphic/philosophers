@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:11:55 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/08 16:56:52 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:25:49 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,3 @@ long	get_time(void)
 	gettimeofday(&time, NULL);
 	return ((time.tv_sec * 1e6) + (time.tv_usec));
 }
-
