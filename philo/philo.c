@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/08 16:40:40 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:22:40 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ int	s_sleep(t_phi *philo, unsigned long time)
 	}
 	return (0);
 }
-
-
 
 void	*ft_philosopher(void	*arg)
 {
@@ -52,8 +50,6 @@ void	*ft_philosopher(void	*arg)
 	}
 	return (NULL);
 }
-
-
 
 int	check_inputs(int argc, char *argv[], t_logic *logic)
 {

@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/08 16:47:21 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:23:03 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,5 +73,18 @@ int		ft_eat(t_phi *philo);
 int		ft_sleep(t_phi *philo);
 void	ft_think(t_phi *philo);
 void	ft_leave_forks(t_phi *philo);
+int		ft_init_forks(t_table *table, t_logic *logic);
+int		ft_philo_init(t_table *table, t_logic *logic, t_phi **philos);
+void	set_philo_data(t_table *table, t_logic *logic, t_phi **philos, int i);
+int		ft_philo_create(t_table *table, t_logic *logic, t_phi **philos);
+int		ft_wait_philo(t_table *table, t_logic *logic);
+int		ft_check_imputs(char **argv);
+void	ft_cleaning(t_table *table, t_phi **phis);
+void	set_imput(int argc, char *argv[], t_logic *logic);
+int		ft_destroy_forks(t_table *table, t_logic *logic);
+void	mutex_print(t_phi *philo, char *s);
+int	s_sleep(t_phi *philo, unsigned long time);
+void	*ft_philosopher(void	*arg);
+int	check_inputs(int argc, char *argv[], t_logic *logic);
 
 #endif
