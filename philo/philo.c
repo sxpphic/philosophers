@@ -31,8 +31,6 @@ void	*ft_philosopher(void	*arg)
 	t_phi	*philo;
 
 	philo = (t_phi *)arg;
-//	if ((philo->id) % 2 != 0)
-//		usleep(500);
 	if (philo->logic->number_phi == 1)
 	{
 		while (!*philo->end)
