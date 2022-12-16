@@ -52,7 +52,7 @@ typedef struct s_phi{
 }				t_phi;
 
 long	get_time(void);
-int		ft_atoi(const char *str);
+long	ft_atoi(const char *str);
 int		ft_malloc_zero(t_table *table, t_logic *logic, t_phi **phis);
 int		ft_error(char *s);
 int		ft_check_imputs(char **argv);
