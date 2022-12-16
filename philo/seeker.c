@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:41:50 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/08 16:41:54 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/14 10:01:07 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	check_end(t_phi *philos, int i)
 	if (time - philos[i].last_eat > philos[0].logic->t_die)
 	{
 		*philos[i].end = 1;
-		usleep(100);
+		usleep(200);
 		printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
 		return (1);
 	}

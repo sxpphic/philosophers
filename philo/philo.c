@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/08 17:22:40 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/14 11:09:09 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	*ft_philosopher(void	*arg)
 	t_phi	*philo;
 
 	philo = (t_phi *)arg;
+//	if ((philo->id) % 2 != 0)
+//		usleep(500);
 	if (philo->logic->number_phi == 1)
 	{
 		while (!*philo->end)
