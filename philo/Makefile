@@ -3,6 +3,7 @@ NAME = 		philo
 SRC =		philo.c \
 			utils.c \
 			utils2.c \
+			utils3.c \
 			init.c \
 			seeker.c \
 			routine_funcs.c \

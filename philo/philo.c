@@ -6,36 +6,44 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 10:09:06 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:30:28 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	s_sleep(t_phi *philo, unsigned long time)
-{
-	long	t;
-
-	t = get_time() + time / 1;
-	while (get_time() < t)
-	{
-		pthread_mutex_lock(philo->m_end);
-		if (*philo->end)
-		{
-			pthread_mutex_unlock(philo->m_end);
-			return (1);
-		}
-		else
-			pthread_mutex_unlock(philo->m_end);
-		usleep(1000);
-	}
-	return (0);
-}
-
 static void	unlock_and_action(t_phi *philo, void (*f)(t_phi *philo))
 {
 	pthread_mutex_unlock(philo->m_end);
 	(*f)(philo);
+}
+
+void	take_and_eat(t_phi *philo)
+{
+	pthread_mutex_lock(philo->m_end);
+	if (!*philo->end)
+		unlock_and_action(philo, take_forks);
+	else
+		pthread_mutex_unlock(philo->m_end);
+	pthread_mutex_lock(philo->m_end);
+	if (!*philo->end)
+		unlock_and_action(philo, ft_eat);
+	else
+		pthread_mutex_unlock(philo->m_end);
+}
+
+void	sleep_and_think(t_phi *philo)
+{
+	pthread_mutex_lock(philo->m_end);
+	if (!*philo->end)
+		unlock_and_action(philo, ft_sleep);
+	else
+		pthread_mutex_unlock(philo->m_end);
+	pthread_mutex_lock(philo->m_end);
+	if (!*philo->end)
+		unlock_and_action(philo, ft_think);
+	else
+		pthread_mutex_unlock(philo->m_end);
 }
 
 void	*ft_philosopher(void	*arg)
@@ -50,62 +58,11 @@ void	*ft_philosopher(void	*arg)
 	}
 	while (!*philo->end)
 	{
-		pthread_mutex_lock(philo->m_end);
-		if (!*philo->end)
-			unlock_and_action(philo, take_forks);
-		else
-			pthread_mutex_unlock(philo->m_end);
-		pthread_mutex_lock(philo->m_end);
-		if (!*philo->end)
-			unlock_and_action(philo, ft_eat);
-		else
-			pthread_mutex_unlock(philo->m_end);
+		take_and_eat(philo);
 		ft_leave_forks(philo);
-		pthread_mutex_lock(philo->m_end);
-		if (!*philo->end)
-			unlock_and_action(philo, ft_sleep);
-		else
-			pthread_mutex_unlock(philo->m_end);
-		pthread_mutex_lock(philo->m_end);
-		if (!*philo->end)
-			unlock_and_action(philo, ft_think);
-		else
-			pthread_mutex_unlock(philo->m_end);
+		sleep_and_think(philo);
 	}
 	return (NULL);
-}
-
-int	ft_check_int(char	**argv)
-{
-	int		i;
-	long	nb;
-
-	i = 1;
-	while (argv[i])
-	{
-		nb = ft_atoi(argv[i]);
-		if ((nb > 2147483647) || (nb < -2147483648))
-			return (-1);
-		else
-			i++;
-	}
-	return (0);
-}
-
-int	check_inputs(int argc, char *argv[], t_logic *logic)
-{
-	if (argc == 5 || argc == 6)
-	{
-		if (ft_check_int(argv) != 0)
-			return (!ft_error("imput error"));
-		if (ft_check_imputs(argv) != 0)
-			return (!ft_error("imput error"));
-		memset(logic, 0x0, sizeof(t_logic));
-		set_imput(argc, argv, logic);
-	}
-	else
-		return (!ft_error("wrong imput"));
-	return (0);
 }
 
 int	main(int argc, char *argv[])

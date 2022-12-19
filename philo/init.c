@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:53:45 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 09:26:40 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:30:44 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	ft_philo_init(t_table *table, t_logic *logic, t_phi **philos)
 		i += 2;
 		usleep(10);
 	}
-//	usleep(200);
 	i = 1;
 	while (i < logic->number_phi)
 	{

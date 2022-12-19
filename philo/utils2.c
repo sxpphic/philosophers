@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:56:59 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 08:57:48 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:34:03 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ int	ft_destroy_forks(t_table *table, t_logic *logic)
 
 void	mutex_print(t_phi *philo, char *s)
 {
-
 	pthread_mutex_lock(philo->m_end);
 	if (!*philo->end)
 	{

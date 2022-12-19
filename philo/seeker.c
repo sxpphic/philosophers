@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:41:50 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 09:28:52 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:36:48 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,19 @@ int	ft_everybody_eats(t_phi *philos)
 	return (1);
 }
 
+int	ft_died(t_phi *philos, int i)
+{
+	pthread_mutex_unlock(philos[i].m_last_eat);
+	pthread_mutex_lock(philos[i].m_end);
+	*philos[i].end = 1;
+	pthread_mutex_unlock(philos[i].m_end);
+	usleep(200);
+	pthread_mutex_lock(philos[i].print);
+	printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
+	pthread_mutex_unlock(philos[i].print);
+	return (1);
+}
+
 int	check_end(t_phi *philos, int i)
 {
 	long	time;
@@ -43,17 +56,7 @@ int	check_end(t_phi *philos, int i)
 	time = get_time();
 	pthread_mutex_lock(philos[i].m_last_eat);
 	if (time - philos[i].last_eat > philos[0].logic->t_die)
-	{
-		pthread_mutex_unlock(philos[i].m_last_eat);
-		pthread_mutex_lock(philos[i].m_end);
-		*philos[i].end = 1;
-		pthread_mutex_unlock(philos[i].m_end);
-		usleep(200);
-		pthread_mutex_lock(philos[i].print);
-		printf("%ld %i %s\n", time / 1000, philos[i].id + 1, "died");
-		pthread_mutex_unlock(philos[i].print);
-		return (1);
-	}
+		return (ft_died(philos, i));
 	else
 		pthread_mutex_unlock(philos[i].m_last_eat);
 	if (philos[i].logic->number_eat && ft_everybody_eats(philos))

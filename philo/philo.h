@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 10:11:14 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:31:58 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ void	mutex_print(t_phi *philo, char *s);
 int		s_sleep(t_phi *philo, unsigned long time);
 void	*ft_philosopher(void	*arg);
 int		check_inputs(int argc, char *argv[], t_logic *logic);
-void	take_forks_last(t_phi *philo);
+int		ft_check_int(char	**argv);
+int		check_inputs(int argc, char *argv[], t_logic *logic);
+int		s_sleep(t_phi *philo, unsigned long time);
 
 #endif
