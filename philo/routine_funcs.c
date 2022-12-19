@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:40:57 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 09:27:18 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:10:35 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	take_forks(t_phi *philo)
 	}
 }
 
-int	ft_eat(t_phi *philo)
+void	ft_eat(t_phi *philo)
 {
 	pthread_mutex_lock(philo->m_last_eat);
 	philo->last_eat = get_time();
@@ -35,16 +35,14 @@ int	ft_eat(t_phi *philo)
 	philo->n_eats++;
 	pthread_mutex_unlock(philo->m_num_eat);
 	if (s_sleep(philo, philo->logic->t_eat))
-		return (1);
-	return (0);
+		return ;
 }
 
-int	ft_sleep(t_phi *philo)
+void	ft_sleep(t_phi *philo)
 {
 	mutex_print(philo, "is sleeping");
 	if (s_sleep(philo, philo->logic->t_slp))
-		return (1);
-	return (0);
+		return ;
 }
 
 void	ft_think(t_phi *philo)

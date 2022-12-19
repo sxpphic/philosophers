@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 09:25:55 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:11:14 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,12 @@ int		ft_everybody_eats(t_phi *philos);
 int		check_end(t_phi *philos, int i);
 void	*ft_seeker(void *arg);
 int		ft_seeker_create(t_phi *philos);
+//routine
 void	take_forks(t_phi *philo);
-int		ft_eat(t_phi *philo);
-int		ft_sleep(t_phi *philo);
+void	ft_eat(t_phi *philo);
+void	ft_sleep(t_phi *philo);
 void	ft_think(t_phi *philo);
+//end routine
 void	ft_leave_forks(t_phi *philo);
 int		ft_init_forks(t_table *table, t_logic *logic);
 int		ft_philo_init(t_table *table, t_logic *logic, t_phi **philos);

@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 09:49:24 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:09:06 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@ int	s_sleep(t_phi *philo, unsigned long time)
 	return (0);
 }
 
+static void	unlock_and_action(t_phi *philo, void (*f)(t_phi *philo))
+{
+	pthread_mutex_unlock(philo->m_end);
+	(*f)(philo);
+}
+
 void	*ft_philosopher(void	*arg)
 {
 	t_phi	*philo;
@@ -46,35 +52,23 @@ void	*ft_philosopher(void	*arg)
 	{
 		pthread_mutex_lock(philo->m_end);
 		if (!*philo->end)
-		{
-			pthread_mutex_unlock(philo->m_end);
-			take_forks(philo);
-		}
+			unlock_and_action(philo, take_forks);
 		else
 			pthread_mutex_unlock(philo->m_end);
 		pthread_mutex_lock(philo->m_end);
 		if (!*philo->end)
-		{
-			pthread_mutex_unlock(philo->m_end);
-			ft_eat(philo);
-		}
+			unlock_and_action(philo, ft_eat);
 		else
 			pthread_mutex_unlock(philo->m_end);
 		ft_leave_forks(philo);
 		pthread_mutex_lock(philo->m_end);
 		if (!*philo->end)
-		{
-			pthread_mutex_unlock(philo->m_end);
-			ft_sleep(philo);
-		}
+			unlock_and_action(philo, ft_sleep);
 		else
 			pthread_mutex_unlock(philo->m_end);
 		pthread_mutex_lock(philo->m_end);
 		if (!*philo->end)
-		{
-			pthread_mutex_unlock(philo->m_end);
-			ft_think(philo);
-		}
+			unlock_and_action(philo, ft_think);
 		else
 			pthread_mutex_unlock(philo->m_end);
 	}
