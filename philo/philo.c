@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/14 11:09:09 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 09:22:33 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,14 @@ int	s_sleep(t_phi *philo, unsigned long time)
 	t = get_time() + time / 1;
 	while (get_time() < t)
 	{
+		pthread_mutex_lock(philo->m_end);
 		if (*philo->end)
+		{
+			pthread_mutex_unlock(philo->m_end);
 			return (1);
+		}
+		else
+			pthread_mutex_unlock(philo->m_end);
 		usleep(1000);
 	}
 	return (0);
