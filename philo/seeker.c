@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:41:50 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 09:17:55 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 09:28:52 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,17 @@ int	ft_everybody_eats(t_phi *philos)
 	i = 0;
 	while (i < philos[0].logic->number_phi)
 	{
+		pthread_mutex_lock(philos[i].m_num_eat);
 		if (philos[i].n_eats >= philos[i].logic->number_eat)
+		{
+			pthread_mutex_unlock(philos[i].m_num_eat);
 			i++;
+		}
 		else
+		{
+			pthread_mutex_unlock(philos[i].m_num_eat);
 			return (0);
+		}
 		if (i == philos[0].logic->number_phi)
 			break ;
 	}

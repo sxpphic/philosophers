@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:40:57 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 09:12:57 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 09:27:18 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ int	ft_eat(t_phi *philo)
 	philo->last_eat = get_time();
 	pthread_mutex_unlock(philo->m_last_eat);
 	mutex_print(philo, "is eating");
+
+	pthread_mutex_lock(philo->m_num_eat);
 	philo->n_eats++;
+	pthread_mutex_unlock(philo->m_num_eat);
 	if (s_sleep(philo, philo->logic->t_eat))
 		return (1);
 	return (0);
