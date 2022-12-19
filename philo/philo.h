@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:07:38 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/14 10:34:16 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 08:50:55 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_table{
 	pthread_t		*philos;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
+	pthread_mutex_t	m_end;
 	int				end;
 }				t_table;
 
@@ -44,6 +45,7 @@ typedef struct s_phi{
 	pthread_t		*philo;
 	t_fork			r_fork;
 	pthread_mutex_t	*print;
+	pthread_mutex_t	*m_end;
 	int				id;
 	int				n_eats;
 	long			last_eat;
