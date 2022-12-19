@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 16:56:59 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 10:34:03 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 13:01:52 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,12 @@ int	ft_destroy_forks(t_table *table, t_logic *logic)
 
 	i = -1;
 	if (pthread_mutex_destroy(&table->print) != 0)
+		return (-1);
+	if (pthread_mutex_destroy(&table->m_last_eat) != 0)
+		return (-1);
+	if (pthread_mutex_destroy(&table->m_end) != 0)
+		return (-1);
+	if (pthread_mutex_destroy(&table->m_num_eat) != 0)
 		return (-1);
 	while (++i < logic->number_phi)
 	{
