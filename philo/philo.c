@@ -6,7 +6,7 @@
 /*   By: vipereir <vipereir@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 11:48:07 by vipereir          #+#    #+#             */
-/*   Updated: 2022/12/19 09:22:33 by vipereir         ###   ########.fr       */
+/*   Updated: 2022/12/19 09:40:21 by vipereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,35 @@ void	*ft_philosopher(void	*arg)
 	}
 	while (!*philo->end)
 	{
+		pthread_mutex_lock(philo->m_end);
 		if (!*philo->end)
+		{
+			pthread_mutex_unlock(philo->m_end);
 			take_forks(philo);
+		}
+		pthread_mutex_unlock(philo->m_end);
+		pthread_mutex_lock(philo->m_end);
 		if (!*philo->end)
+		{
+			pthread_mutex_unlock(philo->m_end);
 			ft_eat(philo);
+		}
 		ft_leave_forks(philo);
+		pthread_mutex_unlock(philo->m_end);
+		pthread_mutex_lock(philo->m_end);
 		if (!*philo->end)
+		{
+			pthread_mutex_unlock(philo->m_end);
 			ft_sleep(philo);
+		}
+		pthread_mutex_unlock(philo->m_end);
+		pthread_mutex_lock(philo->m_end);
 		if (!*philo->end)
+		{
+			pthread_mutex_unlock(philo->m_end);
 			ft_think(philo);
+		}
+		pthread_mutex_unlock(philo->m_end);
 	}
 	return (NULL);
 }
